@@ -2,6 +2,8 @@
 
 A web-based form/quiz system paired with Safe Exam Browser (SEB) to restrict students from using outside applications (browsers, ChatGPT, Word, Notes, PDF viewers) during an assessment.
 
+Hello
+
 ## Tech Stack
 
 - **Laravel (PHP)** — backend API only (`/backend`)
@@ -33,10 +35,12 @@ Install before doing anything else:
 ## For the Project Lead — Creating the Repo (do this once, before anyone clones)
 
 **1. Create the backend (Laravel API)**
+
 ```
 composer create-project laravel/laravel backend
 cd backend
 ```
+
 - Copy `.env.example` to `.env`
 - Set DB credentials in `.env`:
   ```
@@ -55,11 +59,13 @@ cd backend
 - `cd ..`
 
 **2. Create the frontend (React)**
+
 ```
 npm create vite@latest frontend -- --template react
 cd frontend
 npm install
 ```
+
 - Create a `.env` file in `frontend/` with the backend API URL:
   ```
   VITE_API_URL=http://backend.test/api
@@ -68,9 +74,11 @@ npm install
 - `cd ..`
 
 **3. Combine into one repo**
+
 ```
 git init
 ```
+
 - Add a root `.gitignore` covering both:
   ```
   backend/vendor
@@ -101,6 +109,7 @@ git init
 3. `git checkout dev`
 
 **Backend setup:**
+
 1. `cd backend`
 2. `composer install`
 3. Copy `.env.example` to `.env`, fill in your own DB credentials
@@ -111,6 +120,7 @@ git init
 8. `cd ..`
 
 **Frontend setup:**
+
 1. `cd frontend`
 2. `npm install`
 3. Copy `.env.example` to `.env`, confirm `VITE_API_URL` points to the backend
@@ -127,13 +137,13 @@ git init
 
 ## Roles & Folder Ownership
 
-| Role | Owns |
-|---|---|
-| Backend/Data Lead | `backend/app/Models`, `backend/database/migrations`, `backend/routes/api.php`, violation-log endpoint |
-| Form/Frontend Dev | `frontend/src/components/Form`, `frontend/src/pages` (form UI, timer, submission flow) |
-| Admin Dashboard + UI/UX | `frontend/src/pages/Admin`, `frontend/src/styles`, shared layout/components |
-| Kiosk/Lockdown Dev | `.seb` config file, `docs/kiosk-setup.md`, any focus-detection layer |
-| QA/Integration + Docs | `README.md` upkeep, test checklist, merging `dev` into `main` at checkpoints |
+| Role                    | Owns                                                                                                  |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| Backend/Data Lead       | `backend/app/Models`, `backend/database/migrations`, `backend/routes/api.php`, violation-log endpoint |
+| Form/Frontend Dev       | `frontend/src/components/Form`, `frontend/src/pages` (form UI, timer, submission flow)                |
+| Admin Dashboard + UI/UX | `frontend/src/pages/Admin`, `frontend/src/styles`, shared layout/components                           |
+| Kiosk/Lockdown Dev      | `.seb` config file, `docs/kiosk-setup.md`, any focus-detection layer                                  |
+| QA/Integration + Docs   | `README.md` upkeep, test checklist, merging `dev` into `main` at checkpoints                          |
 
 ## Safe Exam Browser (SEB) Setup
 
@@ -152,9 +162,9 @@ git init
 
 ## Timeline
 
-| Dates | Phase |
-|---|---|
-| Sept 26–29 | Planning / suggested system features |
-| Sept 29 – Oct 9 | Programming |
-| Oct 9–10 | System testing |
-| Oct 11–12 | Submission of final system |
+| Dates           | Phase                                |
+| --------------- | ------------------------------------ |
+| Sept 26–29      | Planning / suggested system features |
+| Sept 29 – Oct 9 | Programming                          |
+| Oct 9–10        | System testing                       |
+| Oct 11–12       | Submission of final system           |
