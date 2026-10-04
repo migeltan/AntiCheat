@@ -1,170 +1,204 @@
-# AntiCheat
+# 🛡️ AntiCheat
 
-A web-based form/quiz system paired with Safe Exam Browser (SEB) to restrict students from using outside applications (browsers, ChatGPT, Word, Notes, PDF viewers) during an assessment.
+Secure online exams: a **Laravel + React** quiz system paired with **Safe Exam Browser (SEB)**, so students can't open other apps (browsers, ChatGPT, Word, Notes, PDF viewers) during an assessment.
 
-Hello
+---
 
-## Tech Stack
+## 🧰 Tech Stack
 
-- **Laravel (PHP)** — backend API only (`/backend`)
-- **React (Vite)** — frontend UI, talks to backend via REST API (`/frontend`)
-- **MySQL** — database
-- **Git + GitHub/GitLab** — version control
-- **Safe Exam Browser (SEB)** — lockdown/kiosk layer (config file, no code)
-
-## Project Structure
+| Layer              | Tool                                     | Folder      |
+| ------------------ | ---------------------------------------- | ----------- |
+| 🐘 Backend API     | Laravel (PHP)                            | `backend/`  |
+| ⚛️ Frontend UI     | React + Vite + React Router              | `frontend/` |
+| 🗄️ Database        | MySQL                                    | local       |
+| 🔒 Lockdown        | Safe Exam Browser (config file, no code) | `.seb` file |
+| 🌿 Version control | Git + GitHub                             | -           |
 
 ```
 AntiCheat/
-├── backend/    (Laravel — API, DB, migrations)
-└── frontend/   (React — form UI, admin dashboard UI)
+├── backend/    Laravel: API, DB, migrations
+└── frontend/   React: exam form, admin dashboard
 ```
-
-## Prerequisites
-
-Install before doing anything else:
-
-- Laravel Herd (handles PHP + local web server; enable its MySQL service, or install MySQL separately)
-- Composer
-- Node.js + npm
-- Git
-- Code editor (VS Code recommended)
 
 ---
 
-## For the Project Lead — Creating the Repo (do this once, before anyone clones)
+## ✅ Prerequisites
 
-**1. Create the backend (Laravel API)**
-
-```
-composer create-project laravel/laravel backend
-cd backend
-```
-
-- Copy `.env.example` to `.env`
-- Set DB credentials in `.env`:
-  ```
-  DB_CONNECTION=mysql
-  DB_HOST=127.0.0.1
-  DB_PORT=3306
-  DB_DATABASE=anticheat
-  DB_USERNAME=root
-  DB_PASSWORD=
-  ```
-- Create the `anticheat` database (via Herd's database UI, phpMyAdmin, HeidiSQL, or CLI: `CREATE DATABASE anticheat;`)
-- `php artisan key:generate`
-- `php artisan migrate`
-- `herd link` in the `backend` folder — serves it at `http://backend.test`
-- Open `config/cors.php` and allow the frontend's origin (e.g. `http://frontend.test` or `http://localhost:5173`) so React can call the API
-- `cd ..`
-
-**2. Create the frontend (React)**
-
-```
-npm create vite@latest frontend -- --template react
-cd frontend
-npm install
-```
-
-- Create a `.env` file in `frontend/` with the backend API URL:
-  ```
-  VITE_API_URL=http://backend.test/api
-  ```
-- `herd link` in the `frontend` folder (optional — or just use `npm run dev`'s local server)
-- `cd ..`
-
-**3. Combine into one repo**
-
-```
-git init
-```
-
-- Add a root `.gitignore` covering both:
-  ```
-  backend/vendor
-  backend/.env
-  backend/node_modules
-  frontend/node_modules
-  frontend/.env
-  frontend/dist
-  ```
-- `git add .`
-- `git commit -m "Initial Laravel + React setup"`
-- `git branch -M main`
-- `git remote add origin https://github.com/migeltan/AntiCheat`
-- `git push -u origin main`
-- Create and push `dev` too, since that's the branch everyone will actually work on:
-  ```
-  git checkout -b dev
-  git push -u origin dev
-  ```
-- Push `.env.example` files for both `backend` and `frontend` (copies with blank/placeholder values) so teammates know what to fill in locally.
+| Tool          | Why                                       | Check            |
+| ------------- | ----------------------------------------- | ---------------- |
+| Laravel Herd  | PHP + local web server (enable its MySQL) | `herd --version` |
+| Composer      | PHP packages                              | `composer -V`    |
+| Node.js + npm | React packages                            | `node -v`        |
+| Git           | Version control                           | `git --version`  |
+| VS Code       | Editor (recommended)                      | -                |
 
 ---
 
-## For Everyone Else — Cloning and Setup
+## 🚀 Quick Start
 
-1. `git clone https://github.com/migeltan/AntiCheat.git`
-2. `cd AntiCheat`
-3. `git checkout dev`
+### 1️⃣ Clone
 
-**Backend setup:**
+| Step          | Command                                               |
+| ------------- | ----------------------------------------------------- |
+| Clone         | `git clone https://github.com/migeltan/AntiCheat.git` |
+| Enter         | `cd AntiCheat`                                        |
+| Switch branch | `git checkout dev`                                    |
 
-1. `cd backend`
-2. `composer install`
-3. Copy `.env.example` to `.env`, fill in your own DB credentials
-4. Create the `anticheat` database locally (same as lead's step above)
-5. `php artisan key:generate`
-6. `php artisan migrate`
-7. `herd link` — confirm `http://backend.test` loads
-8. `cd ..`
+### 2️⃣ Backend (`backend/`)
 
-**Frontend setup:**
+| Step | Command / Action                                 | Result                                      |
+| ---- | ------------------------------------------------ | ------------------------------------------- |
+| 1    | `cd backend`                                     | -                                           |
+| 2    | `composer install`                               | Installs PHP packages (`vendor/`)           |
+| 3    | Copy `.env.example` → `.env`                     | Already set for MySQL. Add your DB password |
+| 4    | Create an empty MySQL database named `anticheat` | DB ready                                    |
+| 5    | `php artisan key:generate`                       | Sets `APP_KEY`                              |
+| 6    | `php artisan migrate`                            | Creates tables                              |
+| 7    | `herd link`                                      | Site at `http://backend.test`               |
+| 8    | Open `http://backend.test/api/ping`              | Should show `"status": "ok"` ✅             |
 
-1. `cd frontend`
-2. `npm install`
-3. Copy `.env.example` to `.env`, confirm `VITE_API_URL` points to the backend
-4. `npm run dev` — confirm the React app loads and can reach the backend
-5. `cd ..`
+> No Herd? Run `php artisan serve` instead. Backend will be at `http://localhost:8000`.
 
-## Git Workflow
+**How to copy `.env.example` → `.env`:**
 
-- Two branches: `main` (stable/demo-ready) and `dev` (everyone works here directly — no per-person `feature/*` branches).
-- **Before every `git push`, run `git pull` first** to avoid overwriting someone else's work.
-- Since each role owns a separate folder (see below), conflicts should be rare — but if `git pull` shows a conflict, resolve it before pushing, don't force-push over it.
-- Push small, push often. Don't sit on local changes for days — that's when conflicts get messy.
-- Merge `dev` → `main` only at checkpoints (e.g. Sept 29, and before final submission), once `dev` is confirmed working.
+| Terminal               | Command                       |
+| ---------------------- | ----------------------------- |
+| Windows CMD            | `copy .env.example .env`      |
+| PowerShell             | `Copy-Item .env.example .env` |
+| Mac / Linux / Git Bash | `cp .env.example .env`        |
 
-## Roles & Folder Ownership
+### 3️⃣ Frontend (`frontend/`)
 
-| Role                    | Owns                                                                                                  |
-| ----------------------- | ----------------------------------------------------------------------------------------------------- |
-| Backend/Data Lead       | `backend/app/Models`, `backend/database/migrations`, `backend/routes/api.php`, violation-log endpoint |
-| Form/Frontend Dev       | `frontend/src/components/Form`, `frontend/src/pages` (form UI, timer, submission flow)                |
-| Admin Dashboard + UI/UX | `frontend/src/pages/Admin`, `frontend/src/styles`, shared layout/components                           |
-| Kiosk/Lockdown Dev      | `.seb` config file, `docs/kiosk-setup.md`, any focus-detection layer                                  |
-| QA/Integration + Docs   | `README.md` upkeep, test checklist, merging `dev` into `main` at checkpoints                          |
+| Step | Command / Action             | Result                                             |
+| ---- | ---------------------------- | -------------------------------------------------- |
+| 1    | `cd frontend`                | -                                                  |
+| 2    | `npm install`                | Installs React packages                            |
+| 3    | Copy `.env.example` → `.env` | Sets `VITE_API_URL`                                |
+| 4    | `npm run dev`                | Starts Vite on port **5180**                       |
+| 5    | Open `http://localhost:5180` | Home page with a green **Backend online** badge ✅ |
 
-## Safe Exam Browser (SEB) Setup
+---
 
-1. Download SEB (Windows/Mac) from the official site.
-2. Kiosk dev creates a `.seb` config file: whitelist the exam URL (the frontend's URL), disable other browsers, disable alt-tab/task switching, disable clipboard.
-3. Distribute the `.seb` file to the team — double-clicking it launches SEB directly into the locked exam view.
-4. For the live demo: host both backend and frontend somewhere reachable (or on the same local network) so the `.seb` file points to a stable URL.
+## 🏠 See the Home Page
 
-## Workflow
+| What                                  | URL                                              | File                          |
+| ------------------------------------- | ------------------------------------------------ | ----------------------------- |
+| ⚛️ **React home page (the real one)** | `http://localhost:5180`                          | `frontend/src/pages/Home.jsx` |
+| 🐘 Backend info (JSON only)           | `http://backend.test` or `http://localhost:8000` | `backend/routes/web.php`      |
+| ❤️ Health check                       | `http://backend.test/api/ping`                   | `backend/routes/api.php`      |
 
-1. Each role works mainly in their own folder (see Roles above), on `dev`.
-2. `git pull` before you start work, and again right before you `git push`.
-3. Push small, push often — don't let local changes pile up for days.
-4. QA/Integration lead spot-checks `dev` periodically, flags anyone falling behind, and merges `dev` → `main` at checkpoints.
-5. Checkpoint (Sept 29): everyone must have `dev` running locally (both backend and frontend) without errors before deeper integration work begins.
+**Badge colors on the home page:**
 
-## Timeline
+| Badge              | Meaning                          | Fix                                     |
+| ------------------ | -------------------------------- | --------------------------------------- |
+| 🟢 Backend online  | React can reach Laravel          | -                                       |
+| 🔴 Backend offline | Laravel not running or wrong URL | Check `VITE_API_URL` in `frontend/.env` |
+| 🟡 Checking…       | Still loading                    | Wait a second                           |
 
-| Dates           | Phase                                |
-| --------------- | ------------------------------------ |
-| Sept 26–29      | Planning / suggested system features |
-| Sept 29 – Oct 9 | Programming                          |
-| Oct 9–10        | System testing                       |
-| Oct 11–12       | Submission of final system           |
+---
+
+## 🗺️ Pages & Routes
+
+**Frontend (React)**
+
+| Path     | Page            | File                            | Status         |
+| -------- | --------------- | ------------------------------- | -------------- |
+| `/`      | Home            | `src/pages/Home.jsx`            | ✅ Done        |
+| `/exam`  | Exam form       | `src/pages/Exam.jsx`            | 🚧 Placeholder |
+| `/admin` | Admin dashboard | `src/pages/Admin/Dashboard.jsx` | 🚧 Placeholder |
+| `*`      | 404             | `src/pages/NotFound.jsx`        | ✅ Done        |
+
+**Backend (Laravel API)**
+
+| Method | Endpoint     | Purpose                         | Status     |
+| ------ | ------------ | ------------------------------- | ---------- |
+| GET    | `/api/ping`  | Health check                    | ✅ Done    |
+| -      | more to come | Exam, submission, violation log | 🚧 Planned |
+
+**Add a new page:** create `src/pages/MyPage.jsx`, then add `<Route path="/my-page" element={<MyPage />} />` in `src/App.jsx`.
+**Add a new API route:** add it in `backend/routes/api.php`. Call it from React with `api('/my-route')` from `src/lib/api.js`.
+
+---
+
+## ⚙️ Environment Variables
+
+| File            | Variable                      | Value                                                                     |
+| --------------- | ----------------------------- | ------------------------------------------------------------------------- |
+| `backend/.env`  | `DB_DATABASE`                 | `anticheat`                                                               |
+| `backend/.env`  | `DB_USERNAME` / `DB_PASSWORD` | Your MySQL login                                                          |
+| `frontend/.env` | `VITE_API_URL`                | `http://backend.test` (Herd) or `http://localhost:8000` (`artisan serve`) |
+
+> Restart `npm run dev` after editing `frontend/.env`.
+
+---
+
+## 🔁 Daily Run
+
+| Terminal | Command                           | Skip if                      |
+| -------- | --------------------------------- | ---------------------------- |
+| 1        | `cd backend && php artisan serve` | Using Herd (already running) |
+| 2        | `cd frontend && npm run dev`      | -                            |
+
+Then open `http://localhost:5180`.
+
+---
+
+## 🌿 Git Workflow
+
+| Rule                 | Details                                                                                      |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| Branches             | `main` = stable/demo-ready, `dev` = everyone works here (no per-person `feature/*` branches) |
+| Before every push    | `git pull` first                                                                             |
+| Conflicts            | Resolve them. Never force-push                                                               |
+| Commits              | Small and often. Don't let local changes pile up for days                                    |
+| Merge `dev` → `main` | Only at checkpoints (Sept 29 and before final submission), once `dev` is confirmed working   |
+
+---
+
+## 👥 Roles & Folder Ownership
+
+| Role                       | Owns                                                                                                  |
+| -------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 🐘 Backend/Data Lead       | `backend/app/Models`, `backend/database/migrations`, `backend/routes/api.php`, violation-log endpoint |
+| 📝 Form/Frontend Dev       | `frontend/src/components/Form`, `frontend/src/pages` (form UI, timer, submission flow)                |
+| 📊 Admin Dashboard + UI/UX | `frontend/src/pages/Admin`, `frontend/src/styles`, shared layout/components                           |
+| 🔒 Kiosk/Lockdown Dev      | `.seb` config file, `docs/kiosk-setup.md`, focus-detection layer                                      |
+| ✅ QA/Integration + Docs   | `README.md`, test checklist, merging `dev` into `main`                                                |
+
+---
+
+## 🔒 Safe Exam Browser (SEB)
+
+| Step | Who       | What                                                                                                                                 |
+| ---- | --------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 1    | Everyone  | Download SEB (Windows/Mac) from the official site                                                                                    |
+| 2    | Kiosk dev | Create a `.seb` file: whitelist the frontend URL (`http://localhost:5180`), block other browsers, disable alt-tab, disable clipboard |
+| 3    | Kiosk dev | Share the `.seb` file. Double-click launches SEB straight into the exam                                                              |
+| 4    | Team      | For the demo, host backend + frontend on a stable URL (or same local network)                                                        |
+
+---
+
+## 🛠️ Troubleshooting
+
+| Problem                         | Fix                                                                                                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Badge says **Backend offline**  | Open `/api/ping` in the browser. If it fails, run `herd link` or `php artisan serve`. Then match `VITE_API_URL`                                                        |
+| `404` on `/api/ping`            | Make sure `backend/bootstrap/app.php` has the `api:` line                                                                                                              |
+| `vendor/autoload.php` not found | Run `composer install` in `backend/`                                                                                                                                   |
+| Env change not working          | Restart `npm run dev`                                                                                                                                                  |
+| `Port 5180 is already in use`   | Another app uses that port. Stop it, or change `server.port` in `frontend/vite.config.js`                                                                              |
+| Blank page or wrong tab title   | An old service worker from another project on the same port. Use a different port, or F12 → Application → Service workers → Unregister, then Storage → Clear site data |
+| `SQLSTATE` / DB error           | Check MySQL is running and the `anticheat` DB exists                                                                                                                   |
+| `No application encryption key` | Run `php artisan key:generate`                                                                                                                                         |
+| Blank page after `git pull`     | Run `npm install` and `composer install`                                                                                                                               |
+
+---
+
+## 📅 Timeline
+
+| Dates           | Phase                                                               |
+| --------------- | ------------------------------------------------------------------- |
+| Sept 26–29      | Planning / suggested system features                                |
+| Sept 29 – Oct 9 | Programming (Sept 29 checkpoint: `dev` runs locally with no errors) |
+| Oct 9–10        | System testing                                                      |
+| Oct 11–12       | Submission of final system                                          |
