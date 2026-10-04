@@ -202,3 +202,35 @@ Then open `http://localhost:5180`.
 | Sept 29 – Oct 9 | Programming (Sept 29 checkpoint: `dev` runs locally with no errors) |
 | Oct 9–10        | System testing                                                      |
 | Oct 11–12       | Submission of final system                                          |
+
+## Backend API (`/api`)
+
+No authentication yet. All endpoints accept and return JSON (send `Accept: application/json`).
+
+**Student flow**
+
+| Method | Path                          | Body / notes                                                                                                                                   |
+| ------ | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/exams/code/{code}`          | Validate an exam code                                                                                                                          |
+| POST   | `/exams/code/{code}/sessions` | `student_name`, `student_number`. Starts or resumes a session                                                                                  |
+| GET    | `/sessions/{id}`              | Session + exam (`expires_at` is the server-side deadline)                                                                                      |
+| GET    | `/sessions/{id}/questions`    | Questions for the form                                                                                                                         |
+| PUT    | `/sessions/{id}/answers`      | Autosave: `answers: [{question_id, value}]` (value is a string, or an array for checkboxes)                                                    |
+| POST   | `/sessions/{id}/violations`   | `type`: `tab_switch`, `window_blur`, `app_detected`, `other`; optional `details`. Returns `violation_count`, `max_violations`, `limit_reached` |
+| POST   | `/sessions/{id}/submit`       | `reason`: `manual` (default), `time_up`, `max_violations`                                                                                      |
+
+**Admin flow**
+
+| Method | Path                        | Notes                                                                                                                                                               |
+| ------ | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/exams`                    | List exams                                                                                                                                                          |
+| POST   | `/exams`                    | `title`, `duration_minutes`, optional `max_violations`, `status`, `form_url`. Generates `exam_code`                                                                 |
+| POST   | `/exams/{id}/questions`     | Import: `questions: [{type, prompt, options?, required?}]`. Types: `multiple_choice`, `checkboxes`, `short_answer`, `paragraph`. Blocked once students have started |
+| GET    | `/exams/{id}/questions`     | View questions                                                                                                                                                      |
+| GET    | `/exams/{id}/sessions`      | Submissions                                                                                                                                                         |
+| GET    | `/exams/{id}/violations`    | Full violation log (includes student name/number)                                                                                                                   |
+| GET    | `/exams/{id}/summary`       | Dashboard data: totals, violations by type/severity, per-student rows                                                                                               |
+| GET    | `/sessions/{id}/violations` | One student's violations                                                                                                                                            |
+| GET    | `/sessions/{id}/answers`    | One student's saved answers                                                                                                                                         |
+
+After cloning: `php artisan migrate --seed` creates a "Demo Exam" with 4 questions.
