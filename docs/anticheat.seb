@@ -103,11 +103,11 @@
     <key>browserScreenKeyboard</key>
     <false />
     <key>newBrowserWindowByLinkPolicy</key>
-    <integer>2</integer>
+    <integer>0</integer>
     <key>newBrowserWindowByScriptPolicy</key>
     <integer>2</integer>
     <key>newBrowserWindowByLinkBlockForeign</key>
-    <false />
+    <true />
     <key>newBrowserWindowByScriptBlockForeign</key>
     <false />
     <key>newBrowserWindowByLinkWidth</key>
@@ -135,7 +135,7 @@
     <key>allowBrowsingBackForward</key>
     <false />
     <key>newBrowserWindowNavigation</key>
-    <true />
+    <false />
     <key>removeBrowserProfile</key>
     <true />
     <key>removeLocalStorage</key>
@@ -145,7 +145,7 @@
     <key>browserWindowAllowReload</key>
     <true />
     <key>newBrowserWindowAllowReload</key>
-    <true />
+    <false />
     <key>showReloadWarning</key>
     <true />
     <key>newBrowserWindowShowReloadWarning</key>
@@ -171,7 +171,7 @@
     <key>allowPDFReaderToolbar</key>
     <false />
     <key>allowFind</key>
-    <true />
+    <false />
     <key>allowPrint</key>
     <false />
     <key>allowCustomDownUploadLocation</key>
