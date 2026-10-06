@@ -115,7 +115,7 @@
     <key>newBrowserWindowByLinkHeight</key>
     <string>100%</string>
     <key>newBrowserWindowByLinkPositioning</key>
-    <integer>2</integer>
+    <integer>1</integer>
     <key>newBrowserWindowShowURL</key>
     <integer>0</integer>
     <key>browserWindowShowURL</key>
@@ -201,7 +201,7 @@
     <key>allowUploads</key>
     <false />
     <key>examKeySalt</key>
-    <data>Xq+G2Eb1bL++gW7yO8CYGr5ZJom5cZW1mAsb8hKTbMI=</data>
+    <data>jwyiT1nWchlg7tzXEwCh7PeiNmDGy/HbCT+amPhgNfI=</data>
     <key>examSessionClearCookiesOnEnd</key>
     <true />
     <key>examSessionClearCookiesOnStart</key>
@@ -1648,6 +1648,186 @@
         <key>identifier</key>
         <string />
         <key>windowHandlingProcess</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>WINWORD.EXE</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>notepad.exe</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>chrome.exe</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>msedge.exe</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>AcroRd32.exe</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>Acrobat.exe</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>ChatGPT.exe</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>Copilot.exe</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
+        <string />
+        <key>user</key>
+        <string />
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>currentUser</key>
+        <true />
+        <key>strongKill</key>
+        <false />
+        <key>os</key>
+        <integer>1</integer>
+        <key>executable</key>
+        <string>Claude.exe</string>
+        <key>originalName</key>
+        <string />
+        <key>description</key>
+        <string />
+        <key>identifier</key>
         <string />
         <key>user</key>
         <string />
