@@ -201,7 +201,7 @@
     <key>allowUploads</key>
     <false />
     <key>examKeySalt</key>
-    <data></data>
+    <data>Xq+G2Eb1bL++gW7yO8CYGr5ZJom5cZW1mAsb8hKTbMI=</data>
     <key>examSessionClearCookiesOnEnd</key>
     <true />
     <key>examSessionClearCookiesOnStart</key>
@@ -1784,7 +1784,7 @@
     <key>allowScreenSharing</key>
     <false />
     <key>enablePrivateClipboard</key>
-    <true />
+    <false />
     <key>createNewDesktop</key>
     <true />
     <key>killExplorerShell</key>
@@ -1832,7 +1832,7 @@
     <key>enableWindowsUpdate</key>
     <false />
     <key>clipboardPolicy</key>
-    <integer>2</integer>
+    <integer>1</integer>
     <key>disableSessionChangeLockScreen</key>
     <false />
     <key>enableCursorVerification</key>
