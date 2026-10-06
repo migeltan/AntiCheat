@@ -1658,15 +1658,36 @@
     <key>enableURLContentFilter</key>
     <false />
     <key>URLFilterRules</key>
-    <array></array>
+    <array>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>http://localhost:5180/*</string>
+        <key>action</key>
+        <integer>1</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>http://backend.test/*</string>
+        <key>action</key>
+        <integer>1</integer>
+      </dict>
+    </array>
     <key>URLFilterEnable</key>
-    <false />
+    <true />
     <key>URLFilterEnableContentFilter</key>
     <false />
     <key>blacklistURLFilter</key>
     <string />
     <key>whitelistURLFilter</key>
-    <string />
+    <string>^http:\/\/((localhost)|(.*?\.localhost)):5180\/((/.*?)|(/.*?))(()|(\?.*?))$;^http:\/\/((backend\.test)|(.*?\.backend\.test))\/((/.*?)|(/.*?))(()|(\?.*?))$;^http:\/\/((((localhost)|(.*?\.localhost)):5180)|(((localhost)|(.*?\.localhost)):5180\/.*?))(()|(\?.*?))$</string>
     <key>urlFilterTrustedContent</key>
     <true />
     <key>urlFilterRegex</key>
@@ -1847,13 +1868,13 @@
     <key>hookKeys</key>
     <true />
     <key>enableEsc</key>
-    <true />
+    <false />
     <key>enableCtrlEsc</key>
     <false />
     <key>enableAltEsc</key>
     <false />
     <key>enableAltTab</key>
-    <true />
+    <false />
     <key>enableAltF4</key>
     <false />
     <key>enableStartMenu</key>
@@ -1861,35 +1882,35 @@
     <key>enableMiddleMouse</key>
     <false />
     <key>enableRightMouse</key>
-    <true />
+    <false />
     <key>enablePrintScreen</key>
     <false />
     <key>enableAltMouseWheel</key>
     <false />
     <key>enableF1</key>
-    <true />
+    <false />
     <key>enableF2</key>
-    <true />
+    <false />
     <key>enableF3</key>
-    <true />
+    <false />
     <key>enableF4</key>
-    <true />
+    <false />
     <key>enableF5</key>
-    <true />
+    <false />
     <key>enableF6</key>
-    <true />
+    <false />
     <key>enableF7</key>
-    <true />
+    <false />
     <key>enableF8</key>
-    <true />
+    <false />
     <key>enableF9</key>
-    <true />
+    <false />
     <key>enableF10</key>
-    <true />
+    <false />
     <key>enableF11</key>
-    <true />
+    <false />
     <key>enableF12</key>
-    <true />
+    <false />
     <key>displayAlwaysOn</key>
     <true />
     <key>systemAlwaysOn</key>
