@@ -1,7 +1,10 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Layout from './components/Layout'
 import StudentLayout from './components/student/StudentLayout'
+import AdminLayout from './pages/Admin/AdminLayout'
 import Dashboard from './pages/Admin/Dashboard'
+import ExamDetail from './pages/Admin/ExamDetail'
+import NewExam from './pages/Admin/NewExam'
+import SessionReview from './pages/Admin/SessionReview'
 import Landing from './pages/Landing'
 import NotFound from './pages/NotFound'
 import CodeEntry from './pages/Student/CodeEntry'
@@ -26,9 +29,12 @@ export default function App() {
 
       <Route path="/exam" element={<Navigate to="/student" replace />} />
 
-      {/* Admin area: owned by the admin dashboard developer, left as it was */}
-      <Route element={<Layout />}>
-        <Route path="/admin" element={<Dashboard />} />
+      {/* Admin area: owned by the admin dashboard developer */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="exams/new" element={<NewExam />} />
+        <Route path="exams/:examId" element={<ExamDetail />} />
+        <Route path="sessions/:sessionId" element={<SessionReview />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
