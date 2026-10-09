@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { api } from '../../lib/api'
 import { Loading, StatePanel } from '../../components/student/StatePanel'
+import { isSafeExamBrowser } from '../../lib/environment'
+
+// Must equal "Quit URL" in the .seb config (and be allowed by its URL filter). Loading that
+// URL makes Safe Exam Browser quit; without it a student cannot leave the secure browser.
+const SEB_QUIT_URL = import.meta.env.VITE_SEB_QUIT_URL
 
 // Flowchart: "Submission confirmation". The backend records WHY the session ended
 // (submit_reason), which selects one of the three mockup screens. There is no
@@ -28,8 +33,12 @@ export default function Result() {
   }, [sessionId])
 
   function exit() {
-    // SEB quits via the "quit URL" in the .seb config. In an ordinary browser window.close()
-    // only works for script-opened windows, so fall back to the start page.
+    if (isSafeExamBrowser() && SEB_QUIT_URL) {
+      window.location.href = SEB_QUIT_URL
+      return
+    }
+    // Ordinary browser: window.close() only works for script-opened windows,
+    // so fall back to the start page.
     window.close()
     setTimeout(() => nav('/student', { replace: true }), 300)
   }
