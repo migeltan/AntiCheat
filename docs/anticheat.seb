@@ -11,13 +11,13 @@
     <key>sebServerURL</key>
     <string />
     <key>hashedAdminPassword</key>
-    <string>7D976191645074B6457D42B1AA91E6FA124B7D09DC6DAFA1466CB9B1F8900696</string>
+    <string />
     <key>allowQuit</key>
     <true />
     <key>ignoreExitKeys</key>
     <true />
     <key>hashedQuitPassword</key>
-    <string>7D976191645074B6457D42B1AA91E6FA124B7D09DC6DAFA1466CB9B1F8900696</string>
+    <string />
     <key>exitKey1</key>
     <integer>2</integer>
     <key>exitKey2</key>
