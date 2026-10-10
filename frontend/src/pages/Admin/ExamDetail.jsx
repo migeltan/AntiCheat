@@ -44,7 +44,15 @@ export default function ExamDetail() {
     : defaultTab;
 
   const [acting, setActing] = useState(false);
-  const [actionError, setActionError] = useState("");
+    const [actionError, setActionError] = useState("");
+  // Reported by the Questions tab: how many choice questions have a saved correct answer.
+  const [keys, setKeys] = useState(null);
+  const onKeys = (next) =>
+    setKeys((prev) =>
+      prev && prev.choice === next.choice && prev.keyed === next.keyed
+        ? prev
+        : next,
+    );
 
   const changeStatus = async (action) => {
     setActing(true);
@@ -130,6 +138,8 @@ export default function ExamDetail() {
   // A draft nobody has started shows what to do next instead of a strip of zeros.
   const setup = exam.status === "draft" && totals.sessions === 0;
   const hasQuestions = totals.questions > 0;
+  const keysDone = 
+    hasQuestions && keys !== null && (keys.choice === 0 || keys.keyed > 0);
   const steps = [
     {
       title: "Add questions",
@@ -140,13 +150,20 @@ export default function ExamDetail() {
     },
     {
       title: "Set correct answers",
-      note: "Optional. Choice questions are then scored automatically",
-      state: hasQuestions ? "now" : "wait",
+      note:
+        !keys || !hasQuestions
+          ? "Optional. Choice questions are then scored automatically"
+          : keys.choice === 0
+            ? "Not needed: there are no choice questions"
+                        : keysDone
+              ? `${keys.keyed} of ${keys.choice} choice questions set`
+              : "Optional. Choice questions are then scored automatically",
+      state: keysDone ? "done" : hasQuestions ? "now" : "wait",
     },
     {
       title: "Publish and share the code",
       note: `Students enter ${exam.exam_code} to join`,
-      state: "wait",
+      state: keysDone ? "now" : "wait",
     },
   ];
 
@@ -296,7 +313,11 @@ export default function ExamDetail() {
         )}
         {tab === "violations" && <ViolationLog summary={summary} />}
         {tab === "questions" && (
-          <QuestionsPanel summary={summary} onImported={refresh} />
+          <QuestionsPanel
+            summary={summary}
+            onImported={refresh}
+            onKeys={onKeys}
+          />
         )}
       </section>
     </>

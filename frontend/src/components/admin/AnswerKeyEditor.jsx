@@ -18,7 +18,7 @@ const isSet = (v) => (Array.isArray(v) ? v.length > 0 : Boolean(v));
 // Draft exams only. Sets the correct answer for each choice question so attempts are
 // scored automatically. Text questions are marked by the teacher in the student review.
 // Remount with a new React `key` when the question list changes.
-export default function AnswerKeyEditor({ questions, examId }) {
+export default function AnswerKeyEditor({ questions, examId, onSaved }) {
   const [key, setKey] = useState(() => initialKey(questions));
   const [saved, setSaved] = useState(() =>
     JSON.stringify(initialKey(questions)),
@@ -56,6 +56,7 @@ export default function AnswerKeyEditor({ questions, examId }) {
       setKey(next);
       setSaved(JSON.stringify(next));
       setDone(true);
+      onSaved?.(updated);
     } catch (err) {
       setError(err.message);
     }

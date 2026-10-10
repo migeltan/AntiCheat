@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../lib/api";
 import {
   ParseError,
@@ -87,7 +87,7 @@ function QuestionList({ questions }) {
   );
 }
 
-export default function QuestionsPanel({ summary, onImported }) {
+export default function QuestionsPanel({ summary, onImported, onKeys }) {
   const { exam, totals } = summary;
   const {
     data: questions,
@@ -98,6 +98,20 @@ export default function QuestionsPanel({ summary, onImported }) {
     key: `questions:${exam.id}`,
     interval: 0,
   });
+  // Tell the exam page how many choice questions have a saved correct answer.
+  const reportKeys = (list) => {
+    const choice = list.filter((q) => CHOICE_TYPES.includes(q.type));
+    const keyed = choice.filter((q) =>
+      Array.isArray(q.correct_answer)
+        ? q.correct_answer.length > 0
+        : Boolean(q.correct_answer),
+    ).length;
+    onKeys?.({ choice: choice.length, keyed });
+  };
+  useEffect(() => {
+    if (questions) reportKeys(questions);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questions]);
   const [mode, setMode] = useState("link");
   const [url, setUrl] = useState("");
   const [text, setText] = useState("");
@@ -226,6 +240,7 @@ export default function QuestionsPanel({ summary, onImported }) {
               key={questions.map((q) => q.id).join("-")}
               questions={questions}
               examId={exam.id}
+              onSaved={reportKeys}
             />
           ))}
       </div>
