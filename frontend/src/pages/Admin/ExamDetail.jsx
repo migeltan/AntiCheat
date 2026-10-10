@@ -95,6 +95,11 @@ export default function ExamDetail() {
       value: totals.violations,
       tone: totals.violations ? "warn" : "",
     },
+    {
+      label: "Awaiting review",
+      value: totals.awaiting_review,
+      tone: totals.awaiting_review ? "warn" : "",
+    },
     { label: "Questions", value: totals.questions },
   ];
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   REASON_LABELS,
+  REVIEW_LABELS,
   SEVERITY_LABELS,
   STATUS_LABELS,
   fmtAgo,
@@ -23,6 +24,23 @@ export function ExamStatus({ status }) {
     { published: "Published", closed: "Closed", draft: "Draft" }[status] ??
     "Draft";
   return <span className={`adm-badge adm-badge-exam-${status}`}>{label}</span>;
+}
+
+// The teacher's decision, or (before any decision) the system's "needs review" suggestion.
+export function ReviewBadge({ status, suggested = false }) {
+  if (status) {
+    return (
+      <span className={`adm-badge adm-badge-review-${status}`}>
+        {REVIEW_LABELS[status] ?? status}
+      </span>
+    );
+  }
+  if (suggested) {
+    return (
+      <span className="adm-badge adm-badge-review-awaiting">Needs review</span>
+    );
+  }
+  return null;
 }
 
 export function Severity({ level }) {

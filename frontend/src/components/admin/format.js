@@ -12,6 +12,10 @@ export const VIOLATION_LABELS = {
 };
 
 export const SEVERITY_LABELS = { high: "High", medium: "Medium", low: "Low" };
+export const REVIEW_LABELS = {
+  flagged: "Flagged: cheating",
+  cleared: "Cleared",
+};
 export const SEVERITY_ORDER = { high: 0, medium: 1, low: 2 };
 
 export const STATUS_LABELS = {

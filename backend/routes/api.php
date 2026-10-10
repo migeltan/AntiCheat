@@ -9,6 +9,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ExamSummaryController;
 use App\Http\Controllers\GoogleFormController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\SessionReviewController;
 
 // All routes here are automatically prefixed with /api
 
@@ -48,6 +49,8 @@ Route::middleware('admin.auth')->group(function () {
     Route::post('/exams/{exam}/questions', [QuestionController::class, 'import']);
 
     Route::get('/sessions/{examSession}/violations', [ViolationController::class, 'index']);
+    Route::get('/admin/sessions/{examSession}', [SessionReviewController::class, 'show']);
+    Route::patch('/admin/sessions/{examSession}/review', [SessionReviewController::class, 'update']);
 
     Route::post('/forms/fetch', [GoogleFormController::class, 'fetch'])->middleware('throttle:10,1');
 });

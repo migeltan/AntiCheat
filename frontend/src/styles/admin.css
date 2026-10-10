@@ -1177,3 +1177,57 @@ p.adm-user {
   font-size: 12px;
   color: var(--muted);
 }
+/* ---------- teacher review decision ---------- */
+.adm-badge-review-flagged {
+  background: var(--high-tint);
+  color: var(--high);
+}
+.adm-badge-review-cleared {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+.adm-badge-review-awaiting {
+  background: var(--mid-tint);
+  color: var(--mid);
+}
+.adm-review {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.adm-review-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.adm-review-head .adm-h2 {
+  margin: 0;
+}
+.adm-review-hint,
+.adm-review-meta {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.adm-review .adm-field textarea {
+  font-family: var(--font);
+  font-size: 15px;
+}
+.adm-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.adm-btn-danger {
+  background: var(--high);
+  border-color: var(--high);
+  color: #fff;
+}
+.adm-btn-danger:hover:not(:disabled) {
+  filter: brightness(0.92);
+}
