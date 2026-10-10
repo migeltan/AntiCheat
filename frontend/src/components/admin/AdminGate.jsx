@@ -8,6 +8,9 @@ import {
   saveSignIn,
 } from "../../lib/adminAuth";
 
+import { Logo } from "../student/Icons";
+
+
 // Wraps the admin area. Without a valid teacher sign-in, shows the sign-in form instead.
 export default function AdminGate({ children }) {
   const [state, setState] = useState("checking"); // checking | login | ok | offline
@@ -76,8 +79,17 @@ export default function AdminGate({ children }) {
   return (
     <div className="adm adm-login-wrap">
       <main className="adm-login-card">
-        <p className="adm-login-brand">
-          AntiCheat <span>Admin</span>
+        <p
+          className="adm-login-brand"
+          style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
+        >
+          <Logo size={44} />
+          <span
+            className="sa-wordmark"
+            style={{ fontSize: "1.7rem", fontWeight: 900, color: "var(--ink)" }}
+          >
+            anticheat
+          </span>
         </p>
 
         {state === "checking" && <p role="status">Checking access…</p>}
@@ -95,7 +107,18 @@ export default function AdminGate({ children }) {
 
         {state === "login" && (
           <form onSubmit={signIn} noValidate className="adm-login-form">
-            <h1>Teacher sign in</h1>
+            <h1
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
+              <span className="sa-script" style={{ fontSize: "1.4rem" }}>
+                Welcome, admin
+              </span>
+            </h1>
             <label className="adm-field">
               <span>Teacher ID</span>
               <input

@@ -26,11 +26,6 @@ export default function StudentLayout() {
           </Link>
         )}
         <div className="sa-user">
-          {!inExam && (
-            <Link to="/" className="sa-exit">
-              Start page
-            </Link>
-          )}
           <span className="sa-script">student</span>
           <UserIcon />
         </div>

@@ -1093,11 +1093,16 @@
   grid-template-columns: minmax(0, 1fr);
   place-items: center;
   padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
 }
 .adm-login-card {
   width: 100%;
   max-width: 380px;
   display: grid;
+  margin: 0 auto;
   gap: 16px;
   padding: 28px;
   background: var(--panel);
@@ -1109,6 +1114,7 @@
   margin: 0;
   font-size: 20px;
   color: var(--ink);
+  text-align: center;
 }
 .adm-login-card p {
   margin: 0;
@@ -1122,6 +1128,7 @@ p.adm-login-brand {
   font-size: 18px;
   font-weight: 600;
   color: var(--pine);
+  text-align: center;
 }
 .adm-login-brand span {
   font-weight: 400;
@@ -1137,6 +1144,7 @@ p.adm-login-error {
   text-align: center;
   font-size: 14px;
   color: var(--muted);
+  text-align: center;
 }
 button.adm-nav-link {
   width: 100%;

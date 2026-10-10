@@ -1,5 +1,5 @@
 // Placeholders from the mockup: round logo and round user icon.
-export function Logo({ size = 40 }) {
+export function Logo({ size = 60 }) {
   return (
     <img
       src="/logo.svg"

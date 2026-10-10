@@ -67,7 +67,10 @@ export default function CodeEntry() {
           </button>
         </form>
         <p className="sa-hint sa-gate-foot">
+          <br />
           Instructor? <Link to="/admin">Sign in to the admin area</Link>
+          <br />
+          <Link to="/">← Back to start page</Link>
         </p>
       </div>
     </section>
