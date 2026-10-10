@@ -25,9 +25,6 @@ const TABS = [
 export default function ExamDetail() {
   const { examId } = useParams();
   const [params, setParams] = useSearchParams();
-  const tab = TABS.some((t) => t.id === params.get("tab"))
-    ? params.get("tab")
-    : "live";
 
   const {
     data: summary,
@@ -39,6 +36,12 @@ export default function ExamDetail() {
     key: `summary:${examId}`,
     interval: 5000,
   });
+
+  // A draft has nothing to watch yet, so it opens on Questions; other exams on the Live board.
+  const defaultTab = summary?.exam.status === "draft" ? "questions" : "live";
+  const tab = TABS.some((t) => t.id === params.get("tab"))
+    ? params.get("tab")
+    : defaultTab;
 
   const [acting, setActing] = useState(false);
   const [actionError, setActionError] = useState("");
@@ -121,8 +124,31 @@ export default function ExamDetail() {
     { label: "Questions", value: totals.questions },
   ];
 
-  const goTab = (id) =>
-    setParams(id === "live" ? {} : { tab: id }, { replace: true });
+  // Always write the tab into the URL: on a draft, "Live board" must not bounce back to Questions.
+  const goTab = (id) => setParams({ tab: id }, { replace: true });
+
+  // A draft nobody has started shows what to do next instead of a strip of zeros.
+  const setup = exam.status === "draft" && totals.sessions === 0;
+  const hasQuestions = totals.questions > 0;
+  const steps = [
+    {
+      title: "Add questions",
+      note: hasQuestions
+        ? `${totals.questions} added`
+        : "Import from a Google Form or write them yourself",
+      state: hasQuestions ? "done" : "now",
+    },
+    {
+      title: "Set correct answers",
+      note: "Optional. Choice questions are then scored automatically",
+      state: hasQuestions ? "now" : "wait",
+    },
+    {
+      title: "Publish and share the code",
+      note: `Students enter ${exam.exam_code} to join`,
+      state: "wait",
+    },
+  ];
 
   return (
     <>
@@ -138,7 +164,9 @@ export default function ExamDetail() {
             <ExamStatus status={exam.status} />
             <CodeChip code={exam.exam_code} />
             <span>{fmtMinutes(exam.duration_minutes)}</span>
-            <span>{exam.max_violations} violations allowed</span>
+            <span title="A student with this many medium or serious violations is marked Needs review. Nothing is blocked.">
+              Review after {exam.max_violations} violations
+            </span>
             <label className="adm-switch">
               <input
                 type="checkbox"
@@ -151,11 +179,7 @@ export default function ExamDetail() {
               <span>Students see their score</span>
             </label>
           </p>
-          {exam.status === "draft" && totals.questions === 0 && (
-            <p className="adm-note">
-              Add questions in the Questions tab before publishing.
-            </p>
-          )}
+
           {actionError && (
             <p className="adm-alert" role="alert">
               {actionError}
@@ -170,6 +194,7 @@ export default function ExamDetail() {
               className="adm-btn adm-btn-primary"
               onClick={() => changeStatus("publish")}
               disabled={acting || totals.questions === 0}
+              title={totals.questions === 0 ? "Add questions first" : undefined}
             >
               {exam.status === "closed" ? "Reopen exam" : "Publish exam"}
             </button>
@@ -191,17 +216,33 @@ export default function ExamDetail() {
         </div>
       </header>
 
-      <dl className="adm-stats">
-        {stats.map((s) => (
-          <div
-            key={s.label}
-            className={`adm-stat ${s.tone ? `adm-stat-${s.tone}` : ""} ${s.to ? "adm-stat-link" : ""}`}
-          >
-            <dd>{s.value}</dd>
-            <dt>{s.to ? <Link to={s.to}>{s.label}</Link> : s.label}</dt>
-          </div>
-        ))}
-      </dl>
+      {setup ? (
+        <ol className="adm-steps" aria-label="Getting this exam ready">
+          {steps.map((s, i) => (
+            <li key={s.title} className={`adm-step is-${s.state}`}>
+              <span className="adm-step-dot" aria-hidden="true">
+                {s.state === "done" ? "" : i + 1}
+              </span>
+              <span>
+                <b>{s.title}</b>
+                <small>{s.note}</small>
+              </span>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <dl className="adm-stats">
+          {stats.map((s) => (
+            <div
+              key={s.label}
+              className={`adm-stat ${s.tone ? `adm-stat-${s.tone}` : ""} ${s.to ? "adm-stat-link" : ""}`}
+            >
+              <dd>{s.value}</dd>
+              <dt>{s.to ? <Link to={s.to}>{s.label}</Link> : s.label}</dt>
+            </div>
+          ))}
+        </dl>
+      )}
 
       <div className="adm-tabs" role="tablist" aria-label="Exam sections">
         {TABS.map((t) => (

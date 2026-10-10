@@ -95,7 +95,7 @@ export default function NewExam() {
             )}
           </label>
           <label className="adm-field">
-            <span>Violations allowed</span>
+            <span>Flag for review after (violations)</span>
             <input
               type="number"
               required
@@ -111,17 +111,13 @@ export default function NewExam() {
               </em>
             ) : (
               <small>
-                The exam is submitted automatically when a student reaches this
-                number.
+                A student who reaches this many medium or serious violations is
+                marked "Needs review". Nothing is blocked and the exam is never
+                submitted automatically.
               </small>
             )}
           </label>
         </div>
-
-        <p className="adm-note">
-          New exams start as drafts. Add the questions on the next screen, then
-          publish when you are ready. Students cannot use the code until then.
-        </p>
 
         <label className="adm-field">
           <span>Google Form link (optional)</span>

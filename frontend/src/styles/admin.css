@@ -1,28 +1,34 @@
+/* Admin palette = the student palette (white, blue, navy ink), so both sides of the
+   app look like one product. Light only: the student side has no dark mode either.
+   The variable names --pine* are the OLD accent name; they now hold the student blue,
+   so every rule below picked up the new colour without being rewritten. */
 .adm {
-  --bg: #f1f3f0;
+  --bg: #f4f7fc;
   --panel: #ffffff;
-  --ink: #15252a;
-  --text: #34474d;
-  --muted: #5d6f75;
-  --line: #d6ddd9;
-  --line-soft: #e6ebe8;
-  --wash: #f6f8f6;
+  --ink: #0b1f44;
+  --text: #33415c;
+  --muted: #5b6882;
+  --line: #d9e1ee;
+  --line-soft: #e8eef8;
+  --wash: #f5f8fd;
 
-  --pine: #0d5b56;
-  --pine-strong: #094540;
-  --pine-tint: #dfeeeb;
+  --pine: #1f5fd6;
+  --pine-strong: #1749a8;
+  --pine-tint: #eaf1fd;
   --on-pine: #ffffff;
 
-  --high: #b3261e;
-  --high-tint: #fbe9e7;
-  --mid: #9a5b00;
-  --mid-tint: #fdf0d9;
-  --low: #5d6f75;
-  --low-tint: #e9eeec;
+  --high: #b42318;
+  --high-tint: #fdecea;
+  --mid: #9a4a06;
+  --mid-tint: #fff4e5;
+  --low: #5b6882;
+  --low-tint: #eef2f8;
   --ok: #1d6b3a;
-  --ok-tint: #e1f1e6;
+  --ok-tint: #e3f4ea;
 
-  --font: "IBM Plex Sans", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Lato", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-brand: "Lato", system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
   color-scheme: light;
@@ -33,32 +39,6 @@
   color: var(--text);
   font: 400 15px/1.5 var(--font);
   font-variant-numeric: tabular-nums;
-}
-
-@media (prefers-color-scheme: dark) {
-  .adm {
-    --bg: #0e1719;
-    --panel: #152124;
-    --ink: #e8efec;
-    --text: #b6c4c0;
-    --muted: #8b9d99;
-    --line: #29393b;
-    --line-soft: #1f2d30;
-    --wash: #111c1f;
-    --pine: #4fb5a8;
-    --pine-strong: #7fd0c5;
-    --pine-tint: #16322f;
-    --on-pine: #06201d;
-    --high: #ff8a80;
-    --high-tint: #3a1d1b;
-    --mid: #f0b44c;
-    --mid-tint: #342610;
-    --low: #8b9d99;
-    --low-tint: #1f2d30;
-    --ok: #6fd391;
-    --ok-tint: #153021;
-    color-scheme: dark;
-  }
 }
 
 .adm *,
@@ -1487,4 +1467,146 @@ p.adm-user {
 }
 .adm-tab {
   margin-bottom: 0;
+}
+/* ---------- palette pass: type, headings, brand, refresh feedback ---------- */
+/* main.css turns every h1-h3 white in OS dark mode; admin is light-only, so pin them. */
+.adm h1,
+.adm h2,
+.adm h3 {
+  color: var(--ink);
+  font-family: var(--font-heading);
+}
+.adm-brand {
+  font-family: var(--font-brand);
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+.adm-brand span {
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.adm-fresh-busy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.adm-spinner-sm {
+  width: 12px;
+  height: 12px;
+  border-width: 2px;
+}
+/* ---------- questions tab ---------- */
+/* wider list, narrower importer (desktop only: phones keep the one-column rule above) */
+@media (min-width: 861px) {
+  .adm-split {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+/* segmented control for the three ways to add questions */
+.adm-seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding: 3px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--wash);
+}
+.adm-seg-btn {
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+.adm-seg-btn:hover:not(:disabled) {
+  color: var(--ink);
+}
+.adm-seg-btn.is-on {
+  background: var(--panel);
+  color: var(--pine-strong);
+  box-shadow: 0 1px 2px rgba(11, 31, 68, 0.14);
+}
+.adm-seg-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* a button that reads as a link ("Never mind") */
+.adm-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--pine-strong);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+/* --accent-deep never existed, so this fell back to the browser default */
+.adm-choice input {
+  accent-color: var(--pine);
+}
+/* ---------- draft exam: setup steps (replace the all-zero stat strip) ---------- */
+.adm-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1px; /* the 1px gaps show the container colour as dividers */
+  margin-bottom: 24px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+.adm-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--panel);
+}
+.adm-step b {
+  display: block;
+  font-weight: 600;
+  color: var(--ink);
+}
+.adm-step small {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+}
+.adm-step-dot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--wash);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.adm-step.is-now .adm-step-dot {
+  border-color: var(--pine);
+  background: var(--pine);
+  color: var(--on-pine);
+}
+.adm-step.is-done .adm-step-dot {
+  border-color: var(--ok);
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+.adm-step.is-done .adm-step-dot::before {
+  content: "\2713";
+}
+.adm-step.is-wait {
+  opacity: 0.75;
 }

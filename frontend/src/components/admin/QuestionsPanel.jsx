@@ -107,9 +107,12 @@ export default function QuestionsPanel({ summary, onImported }) {
   const [problem, setProblem] = useState(null); // { message, problems[] }
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  // With questions already in place the importer starts collapsed (see below).
+  const [showImport, setShowImport] = useState(false);
 
   // Backend answers 409 unless the exam is a draft with no sessions.
   const locked = exam.status !== "draft" || totals.sessions > 0;
+  const hasQuestions = questions?.length > 0;
   const count = (n) => `${n} ${n === 1 ? "question" : "questions"}`;
 
   const reset = () => {
@@ -181,6 +184,7 @@ export default function QuestionsPanel({ summary, onImported }) {
         body: toImportPayload(preview),
       });
       setDone(true);
+      setShowImport(false);
       setPreview(null);
       setUrl("");
       setText("");
@@ -227,17 +231,44 @@ export default function QuestionsPanel({ summary, onImported }) {
       </div>
 
       <aside className="adm-import">
-        <h2 className="adm-h2">Add questions</h2>
+        <h2 className="adm-h2">
+          {locked
+            ? "Questions are locked"
+            : hasQuestions
+              ? "Replace questions"
+              : "Add questions"}
+        </h2>
         {locked ? (
           <p className="adm-note">
             {exam.status !== "draft"
               ? `This exam is ${exam.status}, so its questions can no longer be changed.`
               : `${totals.sessions} ${totals.sessions === 1 ? "student has" : "students have"} already started this exam, so its questions can no longer be changed.`}
           </p>
+        ) : hasQuestions && !showImport ? (
+          <>
+            {done && (
+              <p className="adm-ok" role="status">
+                Questions imported. Set the correct answers on the left, then
+                publish the exam.
+              </p>
+            )}
+            <p className="adm-note">
+              Set each question's correct answer on the left. To start over,
+              import a new set: it replaces the {count(questions.length)} you
+              have now.
+            </p>
+            <button
+              type="button"
+              className="adm-btn"
+              onClick={() => setShowImport(true)}
+            >
+              Import a different set
+            </button>
+          </>
         ) : (
           <>
             <div
-              className="adm-form-actions"
+              className="adm-seg"
               role="group"
               aria-label="How to add questions"
             >
@@ -246,7 +277,7 @@ export default function QuestionsPanel({ summary, onImported }) {
                   key={m.id}
                   type="button"
                   className={
-                    mode === m.id ? "adm-btn adm-btn-primary" : "adm-btn"
+                    mode === m.id ? "adm-seg-btn is-on" : "adm-seg-btn"
                   }
                   aria-pressed={mode === m.id}
                   onClick={() => {
@@ -259,11 +290,21 @@ export default function QuestionsPanel({ summary, onImported }) {
                 </button>
               ))}
             </div>
-            {questions?.length > 0 && (
+            {hasQuestions && (
               <p className="adm-note">
                 <strong>
                   Importing replaces the {count(questions.length)} on the left.
-                </strong>
+                </strong>{" "}
+                <button
+                  type="button"
+                  className="adm-link"
+                  onClick={() => {
+                    setShowImport(false);
+                    reset();
+                  }}
+                >
+                  Never mind
+                </button>
               </p>
             )}
 
@@ -357,17 +398,15 @@ export default function QuestionsPanel({ summary, onImported }) {
                     />
                   </label>
                 )}
-                <label className="adm-field">
-                  <span>
-                    <input
-                      type="checkbox"
-                      checked={draft.required}
-                      onChange={(e) =>
-                        setDraft({ ...draft, required: e.target.checked })
-                      }
-                    />{" "}
-                    Required
-                  </span>
+                <label className="adm-check">
+                  <input
+                    type="checkbox"
+                    checked={draft.required}
+                    onChange={(e) =>
+                      setDraft({ ...draft, required: e.target.checked })
+                    }
+                  />
+                  Required
                 </label>
                 <button
                   type="button"

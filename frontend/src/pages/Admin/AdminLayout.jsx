@@ -1,7 +1,6 @@
-import { NavLink, Outlet } from "react-router-dom";
-import "@fontsource/ibm-plex-sans/400.css";
-import "@fontsource/ibm-plex-sans/500.css";
-import "@fontsource/ibm-plex-sans/600.css";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
+// Inter 400/600/700 and Lato are loaded globally in main.jsx (same fonts as the student side).
+import "@fontsource/inter/500.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "../../styles/admin.css";
 import { api } from "../../lib/api";
@@ -49,6 +48,8 @@ async function signOut() {
 
 export default function AdminLayout() {
   const user = getAdminUser();
+  // "Exams" stays highlighted on an exam or student page, but not on the New exam page.
+  const onNewExam = useLocation().pathname.endsWith("/exams/new");
   return (
     <div className="adm">
       <a className="adm-skip" href="#adm-main">
@@ -62,9 +63,8 @@ export default function AdminLayout() {
         <nav className="adm-nav" aria-label="Admin">
           <NavLink
             to="/admin"
-            end
             className={({ isActive }) =>
-              isActive ? "adm-nav-link is-active" : "adm-nav-link"
+              isActive && !onNewExam ? "adm-nav-link is-active" : "adm-nav-link"
             }
           >
             Exams

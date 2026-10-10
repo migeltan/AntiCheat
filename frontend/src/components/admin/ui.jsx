@@ -125,12 +125,36 @@ export function Loading({ label = "Loading" }) {
   );
 }
 
-// "Updated 4 s ago" + refresh button. Turns into a warning if the last refresh failed.
 export function Freshness({ updatedAt, error, onRefresh }) {
   const now = useNow(1000);
+  const [busy, setBusy] = useState(false);
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  // Refreshing used to look like nothing happened (the label already said "just now").
+  // Now the button shows a spinner until the new data arrives, for at least half a second.
+  const refresh = async () => {
+    setBusy(true);
+    await Promise.all([
+      Promise.resolve(onRefresh?.()).catch(() => {}),
+      new Promise((r) => setTimeout(r, 500)),
+    ]);
+    if (mounted.current) setBusy(false);
+  };
+
   return (
     <div className="adm-fresh" role="status">
-      {error ? (
+      {busy ? (
+        <span className="adm-fresh-busy">
+          <span className="adm-spinner adm-spinner-sm" aria-hidden="true" />
+          Refreshing
+        </span>
+      ) : error ? (
         <span className="adm-fresh-bad">
           Connection lost. Showing the last data from{" "}
           {fmtAgo(updatedAt, now) || "earlier"}.
@@ -143,7 +167,8 @@ export function Freshness({ updatedAt, error, onRefresh }) {
       <button
         type="button"
         className="adm-btn adm-btn-quiet"
-        onClick={onRefresh}
+        onClick={refresh}
+        disabled={busy}
       >
         Refresh
       </button>
