@@ -25,6 +25,10 @@ class QuestionController extends Controller
             'questions.*.required' => 'sometimes|boolean',
         ]);
 
+        if ($exam->status !== Exam::STATUS_DRAFT) {
+            return response()->json(['message' => 'Questions can only be imported while the exam is a draft.'], 409);
+        }
+
         if ($exam->sessions()->exists()) {
             return response()->json(['message' => 'Students have already started this exam.'], 409);
         }

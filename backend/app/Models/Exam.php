@@ -8,6 +8,10 @@ use Illuminate\Support\Str;
 
 class Exam extends Model
 {
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_PUBLISHED = 'published';
+    public const STATUS_CLOSED = 'closed';
+
     protected $fillable = [
         'title', 'form_url', 'duration_minutes', 'max_violations', 'status',
     ];

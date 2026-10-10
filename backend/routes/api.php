@@ -19,6 +19,8 @@ Route::get('/ping', fn () => response()->json([
 
 Route::get('/exams', [ExamController::class, 'index']);
 Route::post('/exams', [ExamController::class, 'store']);
+Route::patch('/exams/{exam}/publish', [ExamController::class, 'publish']);
+Route::patch('/exams/{exam}/close', [ExamController::class, 'close']);
 Route::get('/exams/code/{code}', [ExamController::class, 'showByCode']);
 
 Route::post('/exams/code/{code}/sessions', [ExamSessionController::class, 'start']);

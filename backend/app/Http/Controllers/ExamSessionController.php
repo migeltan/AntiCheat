@@ -18,7 +18,7 @@ class ExamSessionController extends Controller
         ]);
 
         $exam = Exam::where('exam_code', strtoupper($code))
-            ->where('status', 'published')
+            ->whereIn('status', [Exam::STATUS_PUBLISHED, Exam::STATUS_CLOSED])
             ->first();
 
         if (! $exam) {
@@ -36,6 +36,10 @@ class ExamSessionController extends Controller
 
         if ($existing) {
             return response()->json($existing->load('exam'));
+        }
+
+        if ($exam->status === Exam::STATUS_CLOSED) {
+            return response()->json(['message' => 'This exam is closed and is no longer accepting new attempts.'], 409);
         }
 
         $now = now();
