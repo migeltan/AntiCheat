@@ -4,6 +4,7 @@ import "@fontsource/inter/500.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "../../styles/admin.css";
 import { api } from "../../lib/api";
+import { Logo } from "../../components/student/Icons";
 import { usePolling } from "../../components/admin/usePolling";
 import {
   clearSignIn,
@@ -56,10 +57,47 @@ export default function AdminLayout() {
         Skip to content
       </a>
       <aside className="adm-rail">
-        <NavLink to="/admin" className="adm-brand" end>
-          AntiCheat
-          <span>Admin</span>
+        <NavLink
+          to="/admin"
+          className="adm-brand"
+          style={{ alignItems: "center", gap: 10 }}
+          end
+        >
+          <Logo size={40} />
+          <span style={{ display: "grid", gap: 3 }}>
+            <span
+              style={{
+                fontFamily: "var(--font-brand)",
+                fontSize: "1.4rem",
+                fontWeight: 900,
+                letterSpacing: "-0.03em",
+                lineHeight: 1,
+                color: "var(--ink)",
+              }}
+            >
+              anticheat
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: "1rem",
+                fontStyle: "italic",
+                fontWeight: 400,
+                letterSpacing: 0,
+                lineHeight: 1,
+                color: "var(--muted)",
+              }}
+            >
+              admin
+            </span>
+          </span>
         </NavLink>
+        {user && (
+            <p className="adm-user">
+              {user.name}
+              <span>{user.employee_id}</span>
+            </p>
+          )}
         <nav className="adm-nav" aria-label="Admin">
           <NavLink
             to="/admin"
@@ -83,12 +121,6 @@ export default function AdminLayout() {
           <NavLink to="/" className="adm-nav-link adm-nav-link-quiet">
             Back to start page
           </NavLink>
-          {user && (
-            <p className="adm-user">
-              {user.name}
-              <span>{user.employee_id}</span>
-            </p>
-          )}
           <button
             type="button"
             className="adm-nav-link adm-nav-link-quiet"
