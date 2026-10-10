@@ -29,39 +29,47 @@ export default function CodeEntry() {
   }
 
   return (
-    <section className="sa-gate">
-      <p className="sa-wordmark sa-wordmark-xl" aria-hidden="true">
-        anticheat
-      </p>
-      <form onSubmit={submit} className="sa-form sa-form-center" noValidate>
-        <label htmlFor="code" className="sa-title">
-          Enter exam code
-        </label>
-        <input
-          id="code"
-          className="sa-code-input"
-          value={code}
-          onChange={(e) => setCode(e.target.value.toUpperCase())}
-          maxLength={12}
-          autoComplete="off"
-          autoCapitalize="characters"
-          spellCheck={false}
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? "code-error" : undefined}
-          autoFocus
-        />
-        {error && (
-          <p id="code-error" className="sa-notice" role="alert">
-            {error}
-          </p>
-        )}
-        <button className="sa-btn sa-btn-primary" disabled={busy}>
-          {busy ? "Checking…" : "Continue"}
-        </button>
-      </form>
-      <p className="sa-hint">
-        Instructor? <Link to="/admin">Sign in to the admin area</Link>
-      </p>
+        <section className="sa-gate">
+      <div className="sa-gate-card">
+        <p className="sa-wordmark sa-wordmark-lg" aria-hidden="true">
+          anticheat
+        </p>
+        <form onSubmit={submit} className="sa-form sa-form-center" noValidate>
+          <div className="sa-gate-text">
+            <label htmlFor="code" className="sa-title">
+              Enter exam code
+            </label>
+            <p className="sa-hint">
+              Your teacher gave you this code. It is not case-sensitive.
+            </p>
+          </div>
+          <input
+            id="code"
+            className="sa-code-input"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            maxLength={12}
+            autoComplete="off"
+            autoCapitalize="characters"
+            spellCheck={false}
+            placeholder="ABC123"
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? "code-error" : undefined}
+            autoFocus
+          />
+          {error && (
+            <p id="code-error" className="sa-notice" role="alert">
+              {error}
+            </p>
+          )}
+          <button className="sa-btn sa-btn-primary sa-btn-wide" disabled={busy}>
+            {busy ? "Checking…" : "Continue"}
+          </button>
+        </form>
+        <p className="sa-hint sa-gate-foot">
+          Instructor? <Link to="/admin">Sign in to the admin area</Link>
+        </p>
+      </div>
     </section>
   );
 }

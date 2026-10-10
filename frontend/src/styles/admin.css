@@ -1102,7 +1102,8 @@
   padding: 28px;
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(23, 73, 168, 0.08);
 }
 .adm-login-card h1 {
   margin: 0;
