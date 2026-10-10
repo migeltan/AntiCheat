@@ -1286,3 +1286,205 @@ p.adm-user {
   font-size: 14px;
   color: var(--ok);
 }
+/* ---------- dashboard: needs-review strip + "to review" count ---------- */
+.adm-attn {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--mid);
+  border-radius: 10px;
+  background: var(--panel);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.adm-attn h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-soft);
+}
+.adm-attn-num {
+  min-width: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--mid-tint);
+  color: var(--mid);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+.adm-attn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  padding: 12px 16px;
+}
+.adm-attn li + li .adm-attn-row {
+  border-top: 1px solid var(--line-soft);
+}
+.adm-attn-row:hover {
+  background: var(--wash);
+}
+.adm-attn-title {
+  flex: 1 1 200px;
+  min-width: 0;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.adm-attn-count {
+  font-size: 14px;
+  color: var(--muted);
+}
+.adm-attn-go {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--pine-strong);
+}
+.adm-attn-row:hover .adm-attn-go {
+  text-decoration: underline;
+}
+.adm-todo {
+  display: inline-block;
+  min-width: 28px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--mid-tint);
+  color: var(--mid);
+  font-weight: 600;
+  text-align: center;
+}
+.adm-todo:hover {
+  text-decoration: underline;
+}
+/* ---------- session page: previous / next student ---------- */
+.adm-stepper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 8px 8px 8px 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.adm-stepper-pos {
+  font-size: 14px;
+  color: var(--muted);
+}
+.adm-stepper-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.adm-stepper-count {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--on-pine);
+  color: var(--pine-strong);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+.adm-btn-off {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+/* ---------- exam page: switch, clickable stat, tabs ---------- */
+.adm-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  cursor: pointer;
+}
+.adm-switch input {
+  position: absolute;
+  left: 0;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.adm-switch-track {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background 0.15s;
+}
+.adm-switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+.adm-switch input:checked + .adm-switch-track {
+  background: var(--pine);
+}
+.adm-switch input:checked + .adm-switch-track::after {
+  background: var(--on-pine);
+  transform: translateX(14px);
+}
+.adm-switch input:focus-visible + .adm-switch-track {
+  outline: 2px solid var(--pine);
+  outline-offset: 2px;
+}
+.adm-switch input:disabled + .adm-switch-track {
+  opacity: 0.5;
+}
+
+.adm-head .adm-note,
+.adm-head .adm-alert {
+  margin-top: 10px;
+}
+
+/* the whole stat tile is the link (stretched ::after) */
+.adm-stat {
+  position: relative;
+}
+.adm-stat-link:hover {
+  background: var(--wash);
+}
+.adm-stat a:hover {
+  text-decoration: underline;
+}
+.adm-stat a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.adm-stat a:focus-visible {
+  outline: none;
+}
+.adm-stat a:focus-visible::after {
+  outline: 2px solid var(--pine);
+  outline-offset: -2px;
+}
+
+/* the -1px tab margin made the bar scroll vertically (the stray scrollbar) */
+.adm-tabs {
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+.adm-tab {
+  margin-bottom: 0;
+}

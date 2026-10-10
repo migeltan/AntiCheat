@@ -97,32 +97,40 @@ export default function ExamDetail() {
   }
 
   const { exam, totals } = summary;
+
+  // Five numbers instead of six: submitted + auto-submitted are both "finished" to a
+  // teacher. "To review" is a link that opens the Students tab already filtered.
   const stats = [
     {
       label: "Taking now",
       value: totals.in_progress,
       tone: totals.in_progress ? "live" : "",
     },
-    { label: "Submitted", value: totals.submitted },
-    { label: "Auto-submitted", value: totals.auto_submitted },
+    { label: "Finished", value: totals.submitted + totals.auto_submitted },
     {
       label: "Violations",
       value: totals.violations,
       tone: totals.violations ? "warn" : "",
     },
     {
-      label: "Awaiting review",
+      label: "To review",
       value: totals.awaiting_review,
       tone: totals.awaiting_review ? "warn" : "",
+      to: `?tab=students&review=awaiting`,
     },
     { label: "Questions", value: totals.questions },
   ];
+
+  const goTab = (id) =>
+    setParams(id === "live" ? {} : { tab: id }, { replace: true });
 
   return (
     <>
       <nav className="adm-crumbs" aria-label="Breadcrumb">
         <Link to="/admin">Exams</Link>
       </nav>
+
+      {/* Title and facts on the left, what you can DO on the right. */}
       <header className="adm-head">
         <div>
           <h1>{exam.title}</h1>
@@ -131,42 +139,18 @@ export default function ExamDetail() {
             <CodeChip code={exam.exam_code} />
             <span>{fmtMinutes(exam.duration_minutes)}</span>
             <span>{exam.max_violations} violations allowed</span>
-          </p>
-          <div className="adm-form-actions">
-            {exam.status !== "published" && (
-              <button
-                type="button"
-                className="adm-btn adm-btn-primary"
-                onClick={() => changeStatus("publish")}
-                disabled={acting || totals.questions === 0}
-              >
-                {exam.status === "closed" ? "Reopen exam" : "Publish exam"}
-              </button>
-            )}
-            {exam.status === "published" && (
-              <button
-                type="button"
-                className="adm-btn"
-                onClick={() =>
-                  window.confirm(
-                    "Close this exam? Students already taking it can finish, but nobody new can join.",
-                  ) && changeStatus("close")
-                }
+            <label className="adm-switch">
+              <input
+                type="checkbox"
+                role="switch"
+                checked={Boolean(exam.show_score)}
+                onChange={(e) => changeScoreVisibility(e.target.checked)}
                 disabled={acting}
-              >
-                Close exam
-              </button>
-            )}
-          </div>
-          <label className="adm-check">
-            <input
-              type="checkbox"
-              checked={Boolean(exam.show_score)}
-              onChange={(e) => changeScoreVisibility(e.target.checked)}
-              disabled={acting}
-            />
-            <span>Show students their score after they submit</span>
-          </label>
+              />
+              <span className="adm-switch-track" aria-hidden="true" />
+              <span>Students see their score</span>
+            </label>
+          </p>
           {exam.status === "draft" && totals.questions === 0 && (
             <p className="adm-note">
               Add questions in the Questions tab before publishing.
@@ -178,17 +162,43 @@ export default function ExamDetail() {
             </p>
           )}
         </div>
-        <Freshness updatedAt={updatedAt} error={error} onRefresh={refresh} />
+        <div className="adm-head-actions">
+          <Freshness updatedAt={updatedAt} error={error} onRefresh={refresh} />
+          {exam.status !== "published" && (
+            <button
+              type="button"
+              className="adm-btn adm-btn-primary"
+              onClick={() => changeStatus("publish")}
+              disabled={acting || totals.questions === 0}
+            >
+              {exam.status === "closed" ? "Reopen exam" : "Publish exam"}
+            </button>
+          )}
+          {exam.status === "published" && (
+            <button
+              type="button"
+              className="adm-btn"
+              onClick={() =>
+                window.confirm(
+                  "Close this exam? Students already taking it can finish, but nobody new can join.",
+                ) && changeStatus("close")
+              }
+              disabled={acting}
+            >
+              Close exam
+            </button>
+          )}
+        </div>
       </header>
 
       <dl className="adm-stats">
         {stats.map((s) => (
           <div
             key={s.label}
-            className={`adm-stat ${s.tone ? `adm-stat-${s.tone}` : ""}`}
+            className={`adm-stat ${s.tone ? `adm-stat-${s.tone}` : ""} ${s.to ? "adm-stat-link" : ""}`}
           >
             <dd>{s.value}</dd>
-            <dt>{s.label}</dt>
+            <dt>{s.to ? <Link to={s.to}>{s.label}</Link> : s.label}</dt>
           </div>
         ))}
       </dl>
@@ -203,9 +213,7 @@ export default function ExamDetail() {
             aria-controls="adm-panel"
             tabIndex={tab === t.id ? 0 : -1}
             className={tab === t.id ? "adm-tab is-active" : "adm-tab"}
-            onClick={() =>
-              setParams(t.id === "live" ? {} : { tab: t.id }, { replace: true })
-            }
+            onClick={() => goTab(t.id)}
             onKeyDown={(e) => {
               if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
               const i = TABS.findIndex((x) => x.id === tab);
@@ -214,15 +222,16 @@ export default function ExamDetail() {
                   (i + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) %
                     TABS.length
                 ];
-              setParams(next.id === "live" ? {} : { tab: next.id }, {
-                replace: true,
-              });
+              goTab(next.id);
               requestAnimationFrame(() =>
                 document.getElementById(`tab-${next.id}`)?.focus(),
               );
             }}
           >
             {t.label}
+            {t.id === "students" && totals.awaiting_review > 0 && (
+              <span className="adm-tab-count">{totals.awaiting_review}</span>
+            )}
             {t.id === "violations" && totals.violations > 0 && (
               <span className="adm-tab-count">{totals.violations}</span>
             )}
@@ -237,7 +246,13 @@ export default function ExamDetail() {
         className="adm-panel"
       >
         {tab === "live" && <LiveBoard summary={summary} />}
-        {tab === "students" && <StudentsTable summary={summary} />}
+        {tab === "students" && (
+          // key: clicking "To review" while already on this tab must re-apply the filter
+          <StudentsTable
+            key={params.get("review") ?? "all"}
+            summary={summary}
+          />
+        )}
         {tab === "violations" && <ViolationLog summary={summary} />}
         {tab === "questions" && (
           <QuestionsPanel summary={summary} onImported={refresh} />

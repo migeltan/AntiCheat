@@ -27,6 +27,20 @@ async function loadExams(signal) {
   }));
 }
 
+// Opens the exam's Students tab already filtered to "Needs review".
+const reviewLink = (examId) =>
+  `/admin/exams/${examId}?tab=students&review=awaiting`;
+
+const toReview = (r) => r.totals?.awaiting_review ?? 0;
+
+// Exams that need a decision first, then ones being taken right now, then newest.
+const byAttention = (a, b) =>
+  toReview(b) - toReview(a) ||
+  (b.totals?.in_progress ?? 0) - (a.totals?.in_progress ?? 0) ||
+  Date.parse(b.exam.created_at) - Date.parse(a.exam.created_at);
+
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const { data, error, loading, updatedAt, refresh } = usePolling(loadExams, {
@@ -38,15 +52,24 @@ export default function Dashboard() {
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return (data ?? []).filter(({ exam }) => {
-      if (status !== "all" && exam.status !== status) return false;
-      return (
-        !q ||
-        exam.title.toLowerCase().includes(q) ||
-        exam.exam_code.toLowerCase().includes(q)
-      );
-    });
+    return (data ?? [])
+      .filter(({ exam }) => {
+        if (status !== "all" && exam.status !== status) return false;
+        return (
+          !q ||
+          exam.title.toLowerCase().includes(q) ||
+          exam.exam_code.toLowerCase().includes(q)
+        );
+      })
+      .sort(byAttention);
   }, [data, query, status]);
+
+  // Not affected by the search box: the review strip always shows everything pending.
+  const attention = useMemo(
+    () => (data ?? []).filter((r) => toReview(r) > 0).sort(byAttention),
+    [data],
+  );
+  const pendingTotal = attention.reduce((n, r) => n + toReview(r), 0);
 
   const liveNow = (data ?? []).reduce(
     (n, r) => n + (r.totals?.in_progress ?? 0),
@@ -60,9 +83,16 @@ export default function Dashboard() {
           <h1>Exams</h1>
           <p className="adm-sub">
             {data
-              ? liveNow > 0
-                ? `${liveNow} ${liveNow === 1 ? "student is" : "students are"} taking an exam right now.`
-                : "No one is taking an exam right now."
+              ? [
+                  liveNow > 0
+                    ? `${plural(liveNow, "student is", "students are")} taking an exam right now.`
+                    : "No one is taking an exam right now.",
+                  pendingTotal > 0
+                    ? `${plural(pendingTotal, "student needs", "students need")} your review.`
+                    : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")
               : "Your exams and who is sitting them."}
           </p>
         </div>
@@ -105,6 +135,31 @@ export default function Dashboard() {
         >
           Create an exam to get a code your students can enter.
         </StateMessage>
+      )}
+
+      {attention.length > 0 && (
+        <section className="adm-attn" aria-labelledby="adm-attn-title">
+          <h2 id="adm-attn-title">
+            Needs your review
+            <span className="adm-attn-num">{pendingTotal}</span>
+          </h2>
+          <ul>
+            {attention.map(({ exam, totals }) => (
+              <li key={exam.id}>
+                <Link to={reviewLink(exam.id)} className="adm-attn-row">
+                  <span className="adm-attn-title">{exam.title}</span>
+                  <span className="adm-attn-count">
+                    {plural(totals.awaiting_review, "student", "students")}{" "}
+                    flagged by the system
+                  </span>
+                  <span className="adm-attn-go" aria-hidden="true">
+                    Review
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {data && data.length > 0 && (
@@ -150,7 +205,7 @@ export default function Dashboard() {
                     Finished
                   </th>
                   <th scope="col" className="num">
-                    Violations
+                    To review
                   </th>
                 </tr>
               </thead>
@@ -189,7 +244,7 @@ export default function Dashboard() {
                             {totals.in_progress}
                           </strong>
                         ) : (
-                          0
+                          <span className="adm-faint">0</span>
                         )
                       ) : (
                         "-"
@@ -200,10 +255,16 @@ export default function Dashboard() {
                     </td>
                     <td className="num">
                       {totals ? (
-                        totals.violations > 0 ? (
-                          <strong>{totals.violations}</strong>
+                        totals.awaiting_review > 0 ? (
+                          <Link
+                            to={reviewLink(exam.id)}
+                            className="adm-todo"
+                            aria-label={`${plural(totals.awaiting_review, "student", "students")} to review in ${exam.title}`}
+                          >
+                            {totals.awaiting_review}
+                          </Link>
                         ) : (
-                          0
+                          <span className="adm-faint">0</span>
                         )
                       ) : (
                         "-"

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../../lib/api";
 import { usePolling } from "../../components/admin/usePolling";
@@ -26,14 +26,17 @@ import {
 //   GET /sessions/{id}/violations   newest first
 //   GET /sessions/{id}/answers      [{ question_id, value }]
 //   GET /exams/{exam_id}/questions  to put each answer next to its question
+//   GET /exams/{exam_id}/summary    the exam's other students, for previous / next
 async function loadSession(id, signal) {
   const session = await api(`/admin/sessions/${id}`, { signal });
-  const [violations, answers, questions] = await Promise.all([
+  const [violations, answers, questions, summary] = await Promise.all([
     api(`/sessions/${id}/violations`, { signal }),
     api(`/sessions/${id}/answers`, { signal }),
     api(`/exams/${session.exam_id}/questions`, { signal }),
+    // navigation is a convenience: if this fails the page still works without it
+    api(`/exams/${session.exam_id}/summary`, { signal }).catch(() => null),
   ]);
-  return { session, violations, answers, questions };
+  return { session, violations, answers, questions, summary };
 }
 
 const answerText = (value) =>
@@ -43,8 +46,49 @@ const answerText = (value) =>
       ? ""
       : String(value).trim();
 
+// Where this student sits in the exam's list (same order as the Students tab,
+// newest first), plus the next student still waiting for a decision.
+function rosterNav(summary, sessionId) {
+  const roster = [...(summary?.students ?? [])].sort(
+    (a, b) => Date.parse(b.started_at) - Date.parse(a.started_at),
+  );
+  const i = roster.findIndex((s) => s.session_id === Number(sessionId));
+  if (i === -1) return null;
+  const waiting = (s) => s.needs_review && !s.review_status;
+  // look below the current student first, then wrap around to the top
+  const order = [...roster.slice(i + 1), ...roster.slice(0, i)];
+  return {
+    position: i + 1,
+    total: roster.length,
+    prev: roster[i - 1] ?? null,
+    next: roster[i + 1] ?? null,
+    nextWaiting: order.find(waiting) ?? null,
+    waitingCount: roster.filter(waiting).length,
+  };
+}
+
+function StepLink({ student, label }) {
+  return student ? (
+    <Link
+      to={`/admin/sessions/${student.session_id}`}
+      className="adm-btn"
+      title={student.student_name}
+    >
+      {label}
+    </Link>
+  ) : (
+    <span className="adm-btn adm-btn-off" aria-disabled="true">
+      {label}
+    </span>
+  );
+}
+
 export default function SessionReview() {
   const { sessionId } = useParams();
+  // Moving to another student keeps the old scroll position otherwise.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [sessionId]);
   const { data, error, loading, updatedAt, refresh } = usePolling(
     (signal) => loadSession(sessionId, signal),
     {
@@ -60,6 +104,10 @@ export default function SessionReview() {
   const answerByQuestion = useMemo(
     () => new Map((data?.answers ?? []).map((a) => [a.question_id, a.value])),
     [data],
+  );
+  const nav = useMemo(
+    () => rosterNav(data?.summary, sessionId),
+    [data, sessionId],
   );
 
   if (loading) return <Loading label="Loading student" />;
@@ -111,7 +159,30 @@ export default function SessionReview() {
         <Link to="/admin">Exams</Link>
         <span aria-hidden="true">/</span>
         <Link to={`/admin/exams/${exam.id}`}>{exam.title}</Link>
+        <span aria-hidden="true">/</span>
+        <Link to={`/admin/exams/${exam.id}?tab=students`}>Students</Link>
       </nav>
+
+      {nav && (
+        <div className="adm-stepper">
+          <p className="adm-stepper-pos">
+            Student {nav.position} of {nav.total}
+          </p>
+          <div className="adm-stepper-actions">
+            <StepLink student={nav.prev} label="Previous" />
+            <StepLink student={nav.next} label="Next" />
+            {nav.nextWaiting && (
+              <Link
+                to={`/admin/sessions/${nav.nextWaiting.session_id}`}
+                className="adm-btn adm-btn-primary"
+              >
+                Next to review
+                <span className="adm-stepper-count">{nav.waitingCount}</span>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
 
       <header className="adm-head">
         <div>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ReviewBadge, StateMessage, StatusBadge, StrikePips } from "./ui";
 import {
   REASON_LABELS,
@@ -23,21 +23,29 @@ const matchesReview = (s, filter) =>
     ? s.needs_review && !s.review_status
     : s.review_status === filter);
 
+const REVIEW_CHIPS = [
+  ["all", "Everyone"],
+  ["awaiting", "Needs review"],
+  ["flagged", "Flagged: cheating"],
+  ["cleared", "Cleared"],
+];
+
 export default function StudentsTable({ summary }) {
   const { exam, totals, students } = summary;
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
-  const [flaggedOnly, setFlaggedOnly] = useState(false);
-  const [review, setReview] = useState("all");
+  // Dashboard links here with ?review=awaiting to open the list already filtered.
+  const [params] = useSearchParams();
+  const [review, setReview] = useState(() =>
+    ["awaiting", "flagged", "cleared"].includes(params.get("review"))
+      ? params.get("review")
+      : "all",
+  );
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     return students
-      .filter(
-        (s) =>
-          (status === "all" || s.status === status) &&
-          (!flaggedOnly || s.violation_count > 0),
-      )
+      .filter((s) => status === "all" || s.status === status)
       .filter((s) => matchesReview(s, review))
       .filter(
         (s) =>
@@ -46,7 +54,7 @@ export default function StudentsTable({ summary }) {
           s.student_number.toLowerCase().includes(q),
       )
       .sort((a, b) => Date.parse(b.started_at) - Date.parse(a.started_at));
-  }, [students, query, status, flaggedOnly, review]);
+  }, [students, query, status, review]);
 
   if (students.length === 0) {
     return (
@@ -56,6 +64,10 @@ export default function StudentsTable({ summary }) {
       </StateMessage>
     );
   }
+
+  // Chip counts always reflect the whole exam, not the current search.
+  const count = (filter) =>
+    students.filter((s) => matchesReview(s, filter)).length;
 
   const exportCsv = () =>
     downloadCsv(
@@ -90,6 +102,26 @@ export default function StudentsTable({ summary }) {
 
   return (
     <>
+      {/* One-click decision filter with counts (replaces the dropdown and the
+          "only students with violations" checkbox, which overlapped it). */}
+      <div
+        className="adm-chips"
+        role="group"
+        aria-label="Filter by your decision"
+      >
+        {REVIEW_CHIPS.map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            className={review === value ? "adm-chip is-on" : "adm-chip"}
+            aria-pressed={review === value}
+            onClick={() => setReview(value)}
+          >
+            {label} <b>{count(value)}</b>
+          </button>
+        ))}
+      </div>
+
       <div className="adm-toolbar">
         <label className="adm-field adm-field-inline">
           <span className="adm-sr">Search students</span>
@@ -110,23 +142,6 @@ export default function StudentsTable({ summary }) {
               </option>
             ))}
           </select>
-        </label>
-        <label className="adm-field adm-field-inline">
-          <span className="adm-sr">Filter by decision</span>
-          <select value={review} onChange={(e) => setReview(e.target.value)}>
-            <option value="all">Every decision</option>
-            <option value="awaiting">Needs review</option>
-            <option value="flagged">Flagged: cheating</option>
-            <option value="cleared">Cleared</option>
-          </select>
-        </label>
-        <label className="adm-check">
-          <input
-            type="checkbox"
-            checked={flaggedOnly}
-            onChange={(e) => setFlaggedOnly(e.target.checked)}
-          />
-          Only students with violations
         </label>
         <button
           type="button"
