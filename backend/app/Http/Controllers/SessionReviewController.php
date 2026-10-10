@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExamSession;
+use App\Support\Scoring;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -51,6 +52,12 @@ class SessionReviewController extends Controller
     {
         $session->load(['exam', 'reviewer:id,name,employee_id']);
 
-        return $session->makeVisible(ExamSession::REVIEW_FIELDS)->toArray();
+        $data = $session->makeVisible(ExamSession::REVIEW_FIELDS)->toArray();
+        $data['score'] = Scoring::grade(
+            $session->exam->questions()->get(),
+            $session->answers()->get(),
+        );
+
+        return $data;
     }
 }

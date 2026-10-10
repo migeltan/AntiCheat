@@ -7,6 +7,7 @@ import {
   validateQuestions,
 } from "../../lib/quizParser";
 import { usePolling } from "./usePolling";
+import AnswerKeyEditor from "./AnswerKeyEditor";
 import { Loading, StateMessage } from "./ui";
 import { QUESTION_TYPE_LABELS } from "./format";
 
@@ -67,9 +68,17 @@ function QuestionList({ questions }) {
           </p>
           {q.options?.length > 0 && (
             <ul className="adm-q-options">
-              {q.options.map((o, j) => (
-                <li key={j}>{o}</li>
-              ))}
+              {q.options.map((o, j) => {
+                const correct = [].concat(q.correct_answer ?? []).includes(o);
+                return (
+                  <li key={j} className={correct ? "is-correct" : undefined}>
+                    {o}
+                    {correct && (
+                      <span className="adm-key-tag">Correct answer</span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </li>
@@ -205,7 +214,16 @@ export default function QuestionsPanel({ summary, onImported }) {
             be published until it has questions.
           </StateMessage>
         )}
-        {questions?.length > 0 && <QuestionList questions={questions} />}
+        {questions?.length > 0 &&
+          (locked ? (
+            <QuestionList questions={questions} />
+          ) : (
+            <AnswerKeyEditor
+              key={questions.map((q) => q.id).join("-")}
+              questions={questions}
+              examId={exam.id}
+            />
+          ))}
       </div>
 
       <aside className="adm-import">

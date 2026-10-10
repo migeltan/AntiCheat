@@ -61,7 +61,62 @@ class QuestionController extends Controller
     // Admin: view an exam's questions
     public function index(Exam $exam): JsonResponse
     {
-        return response()->json($exam->questions()->get());
+        return response()->json($exam->questions()->get()->makeVisible('correct_answer'));
+    }
+
+    // Admin: set or clear the correct answers. Body: { key: { "<questionId>": "Option" | ["A","B"] | null } }
+    // Draft exams only. Choice questions only (text answers are marked by the teacher).
+    public function saveKey(Request $request, Exam $exam): JsonResponse
+    {
+        $data = $request->validate([
+            'key' => 'present|array',
+            'key.*' => 'nullable',
+            'key.*.*' => 'string|max:500',
+        ]);
+
+        if ($exam->status !== Exam::STATUS_DRAFT) {
+            return response()->json(['message' => 'The answer key can only be changed while the exam is a draft.'], 409);
+        }
+
+        $questions = $exam->questions()->get()->keyBy('id');
+        $errors = [];
+        $updates = [];
+
+        foreach ($data['key'] as $id => $value) {
+            $q = $questions->get((int) $id);
+
+            if (! $q || ! in_array($q->type, Question::CHOICE_TYPES, true)) {
+                $errors["key.$id"] = 'Only multiple choice and checkbox questions of this exam can have a correct answer.';
+                continue;
+            }
+
+            if ($value === null || $value === '' || $value === []) {
+                $updates[$q->id] = null;
+                continue;
+            }
+
+            $picked = array_values(array_unique(array_map('strval', (array) $value)));
+
+            if ($q->type === 'multiple_choice' && count($picked) !== 1) {
+                $errors["key.$id"] = 'Pick exactly one correct option.';
+            } elseif (array_diff($picked, $q->options ?? [])) {
+                $errors["key.$id"] = 'The correct answer must be one of the options.';
+            } else {
+                $updates[$q->id] = $q->type === 'multiple_choice' ? $picked[0] : $picked;
+            }
+        }
+
+        if ($errors) {
+            throw ValidationException::withMessages($errors);
+        }
+
+        DB::transaction(function () use ($questions, $updates) {
+            foreach ($updates as $id => $answer) {
+                $questions[$id]->update(['correct_answer' => $answer]);
+            }
+        });
+
+        return response()->json($exam->questions()->get()->makeVisible('correct_answer'));
     }
 
     // Student: questions for their active session

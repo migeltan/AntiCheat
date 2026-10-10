@@ -10,6 +10,7 @@ use App\Http\Controllers\ExamSummaryController;
 use App\Http\Controllers\GoogleFormController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\SessionReviewController;
+use App\Http\Controllers\SessionResultController;
 
 // All routes here are automatically prefixed with /api
 
@@ -26,6 +27,7 @@ Route::post('/exams/code/{code}/sessions', [ExamSessionController::class, 'start
 Route::get('/sessions/{examSession}', [ExamSessionController::class, 'show']);
 Route::get('/sessions/{examSession}/questions', [QuestionController::class, 'forSession']);
 Route::get('/sessions/{examSession}/answers', [AnswerController::class, 'index']);
+Route::get('/sessions/{examSession}/result', SessionResultController::class);
 Route::put('/sessions/{examSession}/answers', [AnswerController::class, 'save']);
 Route::post('/sessions/{examSession}/violations', [ViolationController::class, 'store']);
 Route::post('/sessions/{examSession}/submit', [ExamSessionController::class, 'submit']);
@@ -41,12 +43,14 @@ Route::middleware('admin.auth')->group(function () {
     Route::post('/exams', [ExamController::class, 'store']);
     Route::patch('/exams/{exam}/publish', [ExamController::class, 'publish']);
     Route::patch('/exams/{exam}/close', [ExamController::class, 'close']);
+    Route::patch('/exams/{exam}/score-visibility', [ExamController::class, 'setScoreVisibility']);
 
     Route::get('/exams/{exam}/sessions', [ExamSessionController::class, 'index']);
     Route::get('/exams/{exam}/violations', [ViolationController::class, 'forExam']);
     Route::get('/exams/{exam}/summary', ExamSummaryController::class);
     Route::get('/exams/{exam}/questions', [QuestionController::class, 'index']);
     Route::post('/exams/{exam}/questions', [QuestionController::class, 'import']);
+    Route::put('/exams/{exam}/answer-key', [QuestionController::class, 'saveKey']);
 
     Route::get('/sessions/{examSession}/violations', [ViolationController::class, 'index']);
     Route::get('/admin/sessions/{examSession}', [SessionReviewController::class, 'show']);

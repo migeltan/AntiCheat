@@ -9,8 +9,8 @@ import { isSafeExamBrowser } from "../../lib/environment";
 const SEB_QUIT_URL = import.meta.env.VITE_SEB_QUIT_URL;
 
 // Flowchart: "Submission confirmation". The backend records WHY the session ended
-// (submit_reason), which selects one of the three mockup screens. There is no
-// student-facing score or result endpoint, so none is shown.
+// (submit_reason), which selects one of the three mockup screens. The score is shown
+// only when the teacher turned it on for this exam (GET /sessions/{id}/result).
 const SCREENS = {
   manual: { heading: "Exam submitted successfully.", big: null },
   time_up: { heading: "Exam submitted successfully.", big: "Time is up." },
@@ -24,6 +24,7 @@ export default function Result() {
   const { sessionId } = useParams();
   const nav = useNavigate();
   const [state, setState] = useState({ session: null, error: "", status: 0 });
+  const [score, setScore] = useState(null);
 
   useEffect(() => {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
@@ -42,6 +43,18 @@ export default function Result() {
       alive = false;
     };
   }, [sessionId]);
+
+  useEffect(() => {
+    const { session } = state;
+    if (!session?.exam?.show_score || session.status === "in_progress") return;
+    let alive = true;
+    api(`/sessions/${sessionId}/result`)
+      .then((r) => alive && setScore(r.score))
+      .catch(() => {}); // the confirmation still works without the score
+    return () => {
+      alive = false;
+    };
+  }, [sessionId, state]);
 
   function exit() {
     if (isSafeExamBrowser() && SEB_QUIT_URL) {
@@ -87,6 +100,20 @@ export default function Result() {
         <br />
         You may now exit the secure browser.
       </p>
+      {score && (
+        <div className="sa-score" role="status">
+          <p className="sa-muted">Your score</p>
+          <p className="sa-score-value">
+            {score.earned} / {score.total}
+            <span> ({score.percent}%)</span>
+          </p>
+          {score.ungraded > 0 && (
+            <p className="sa-hint">
+              Some answers are marked by your teacher and are not included.
+            </p>
+          )}
+        </div>
+      )}
       <button className="sa-btn sa-btn-primary" onClick={exit}>
         Exit
       </button>

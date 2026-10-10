@@ -60,6 +60,16 @@ class ExamController extends Controller
         return response()->json($exam->fresh());
     }
 
+    // Admin: choose whether students see their score after submitting (any exam status)
+    public function setScoreVisibility(Request $request, Exam $exam): JsonResponse
+    {
+        $data = $request->validate(['show_score' => 'present|boolean']);
+
+        $exam->update(['show_score' => $data['show_score']]);
+
+        return response()->json($exam->fresh());
+    }
+
     // Admin: stop new attempts; students already in progress can finish
     public function close(Exam $exam): JsonResponse
     {

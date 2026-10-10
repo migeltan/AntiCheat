@@ -13,8 +13,13 @@ class Exam extends Model
     public const STATUS_CLOSED = 'closed';
 
     protected $fillable = [
-        'title', 'form_url', 'duration_minutes', 'max_violations', 'status',
+        'title', 'form_url', 'duration_minutes', 'max_violations', 'show_score', 'status',
     ];
+
+    protected function casts(): array
+    {
+        return ['show_score' => 'boolean'];
+    }
 
     protected static function booted(): void
     {

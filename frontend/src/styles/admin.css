@@ -1231,3 +1231,58 @@ p.adm-user {
 .adm-btn-danger:hover:not(:disabled) {
   filter: brightness(0.92);
 }
+
+/* ---------- answer key + scoring ---------- */
+.adm-key-options {
+  margin: 8px 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.adm-key-options legend {
+  padding: 0;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.adm-key-option {
+  display: block;
+  padding: 3px 0;
+  font-size: 14px;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.adm-q-options li.is-correct {
+  color: var(--ok);
+  font-weight: 500;
+}
+.adm-key-tag {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--ok-tint);
+  color: var(--ok);
+  font-size: 12px;
+  font-weight: 500;
+}
+.adm-mark {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.adm-mark.is-right {
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+.adm-mark.is-wrong {
+  background: var(--high-tint);
+  color: var(--high);
+}
+.adm-key-line {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--ok);
+}

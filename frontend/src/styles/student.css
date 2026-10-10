@@ -688,3 +688,21 @@ a.sa-brand {
   margin-right: 1rem;
   font-size: 0.95rem;
 }
+
+/* ---------- score on the confirmation screen ---------- */
+.sa-score {
+  display: grid;
+  gap: 0.25rem;
+}
+.sa-score-value {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 6vw, 2.5rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+.sa-score-value span {
+  font-size: 0.5em;
+  font-weight: 500;
+  color: var(--muted);
+}

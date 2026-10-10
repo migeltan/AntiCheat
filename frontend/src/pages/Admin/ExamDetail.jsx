@@ -55,6 +55,21 @@ export default function ExamDetail() {
     setActing(false);
   };
 
+  const changeScoreVisibility = async (show) => {
+    setActing(true);
+    setActionError("");
+    try {
+      await api(`/exams/${examId}/score-visibility`, {
+        method: "PATCH",
+        body: { show_score: show },
+      });
+      await refresh();
+    } catch (err) {
+      setActionError(err.message);
+    }
+    setActing(false);
+  };
+
   if (loading) return <Loading label="Loading exam" />;
   if (!summary) {
     const missing = error?.status === 404;
@@ -143,6 +158,15 @@ export default function ExamDetail() {
               </button>
             )}
           </div>
+          <label className="adm-check">
+            <input
+              type="checkbox"
+              checked={Boolean(exam.show_score)}
+              onChange={(e) => changeScoreVisibility(e.target.checked)}
+              disabled={acting}
+            />
+            <span>Show students their score after they submit</span>
+          </label>
           {exam.status === "draft" && totals.questions === 0 && (
             <p className="adm-note">
               Add questions in the Questions tab before publishing.

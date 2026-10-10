@@ -40,7 +40,7 @@ class ExamSummaryController extends Controller
         $violations = Violation::whereHas('session', fn ($q) => $q->where('exam_id', $exam->id));
 
         return response()->json([
-            'exam' => $exam->only(['id', 'title', 'exam_code', 'status', 'duration_minutes', 'max_violations']),
+            'exam' => $exam->only(['id', 'title', 'exam_code', 'status', 'duration_minutes', 'max_violations', 'show_score']),
             'totals' => [
                 'sessions' => $students->count(),
                 'in_progress' => $students->where('status', 'in_progress')->count(),

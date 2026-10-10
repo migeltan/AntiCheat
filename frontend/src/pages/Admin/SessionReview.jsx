@@ -86,6 +86,7 @@ export default function SessionReview() {
 
   const { session, violations, questions } = data;
   const exam = session.exam;
+  const score = session.score;
   const answeredCount = questions.filter(
     (q) => answerText(answerByQuestion.get(q.id)) !== "",
   ).length;
@@ -154,6 +155,17 @@ export default function SessionReview() {
           </dd>
         </div>
         <div>
+          <dt>{live ? "Score so far" : "Score"}</dt>
+          <dd>
+            {score.total > 0
+              ? `${score.earned} of ${score.total} (${score.percent}%)`
+              : "No answer key"}
+            {score.total > 0 && score.ungraded > 0 && (
+              <small> {score.ungraded} left for you to mark</small>
+            )}
+          </dd>
+        </div>
+        <div>
           <dt>Violations</dt>
           <dd className="adm-vcell">
             <StrikePips count={violations.length} max={exam.max_violations} />{" "}
@@ -214,14 +226,27 @@ export default function SessionReview() {
             <ol className="adm-qlist">
               {questions.map((q) => {
                 const text = answerText(answerByQuestion.get(q.id));
+                const result = score.results[q.id]; // true, false or undefined (not scored)
                 return (
                   <li key={q.id}>
                     <p className="adm-q-prompt">{q.prompt}</p>
+                    {result !== undefined && (
+                      <p
+                        className={`adm-mark ${result ? "is-right" : "is-wrong"}`}
+                      >
+                        {result ? "Correct" : "Incorrect"}
+                      </p>
+                    )}
                     {text ? (
                       <p className="adm-answer">{text}</p>
                     ) : (
                       <p className="adm-answer is-empty">
                         {live ? "Not answered yet" : "No answer"}
+                      </p>
+                    )}
+                    {result === false && (
+                      <p className="adm-key-line">
+                        Correct answer: {answerText(q.correct_answer)}
                       </p>
                     )}
                   </li>
