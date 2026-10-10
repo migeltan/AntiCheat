@@ -29,6 +29,8 @@ class ExamSummaryController extends Controller
                 'violation_count' => $s->violations_count,
                 'high_violation_count' => $s->high_violations_count,
                 'answered_count' => $s->answers_count,
+                'needs_review' => $s->violations_count >= $exam->max_violations
+                    || $s->high_violations_count > 0,
             ])
             ->values();
 
@@ -43,6 +45,7 @@ class ExamSummaryController extends Controller
                 'auto_submitted' => $students->where('status', 'auto_submitted')->count(),
                 'questions' => $exam->questions()->count(),
                 'violations' => $students->sum('violation_count'),
+                'needs_review' => $students->where('needs_review', true)->count(),
             ],
             'violations_by_type' => (object) (clone $violations)
                 ->selectRaw('type, count(*) as total')->groupBy('type')->pluck('total', 'type')->all(),

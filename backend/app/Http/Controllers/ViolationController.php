@@ -23,21 +23,14 @@ class ViolationController extends Controller
             return response()->json(['message' => 'Session is already submitted.'], 409);
         }
 
-        $violation = $examSession->violations()->create([
+        $examSession->violations()->create([
             'type' => $data['type'],
             'severity' => Violation::TYPES[$data['type']],
             'details' => $data['details'] ?? null,
         ]);
 
-        $count = $examSession->violations()->count();
-        $max = $examSession->exam->max_violations;
-
-        return response()->json([
-            'violation' => $violation,
-            'violation_count' => $count,
-            'max_violations' => $max,
-            'limit_reached' => $count >= $max,
-        ], 201);
+        // The student client gets no counts or limits back: violations are for the instructor only.
+        return response()->json(['recorded' => true], 201);
     }
 
     // Admin: violations for one student session

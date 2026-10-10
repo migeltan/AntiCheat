@@ -24,7 +24,7 @@ class ExamLifecycleTest extends TestCase
         return $exam;
     }
 
-    private function session(Exam $exam): ExamSession
+    private function startedSession(Exam $exam): ExamSession
     {
         return $exam->sessions()->create([
             'student_name' => 'Ana', 'student_number' => '2024-001', 'status' => 'in_progress',
@@ -90,7 +90,7 @@ class ExamLifecycleTest extends TestCase
     public function test_in_progress_student_can_resume_save_and_submit_after_close(): void
     {
         $exam = $this->exam(Exam::STATUS_CLOSED);
-        $session = $this->session($exam);
+        $session = $this->startedSession($exam);
         $questionId = $exam->questions()->value('id');
 
         $this->postJson("/api/exams/code/{$exam->exam_code}/sessions", [
