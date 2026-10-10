@@ -1,9 +1,12 @@
 // Placeholders from the mockup: round logo and round user icon.
 export function Logo({ size = 40 }) {
   return (
-    <span className="sa-logo" style={{ width: size, height: size }} aria-hidden="true">
-      <span style={{ fontSize: size * 0.34 }}>AC</span>
-    </span>
+    <img
+      src="/logo.svg"
+      alt="AntiCheat logo"
+      className="sa-logo"
+      style={{ width: size, height: size }}
+    />
   )
 }
 

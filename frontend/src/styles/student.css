@@ -79,18 +79,8 @@
   gap: 0.6rem;
 }
 .sa-logo {
-  display: grid;
-  place-items: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  border-radius: 50%;
-  border: 1.5px solid var(--blue);
-  color: var(--blue);
-  font-family: var(--font-brand);
-  font-size: 0.7rem;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  background: #fff;
+     object-fit: contain;
+     display: block;
 }
 .sa-wordmark {
   font-family: var(--font-brand);
