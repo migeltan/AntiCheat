@@ -15,6 +15,7 @@ class ExamSessionController extends Controller
         $data = $request->validate([
             'student_name' => 'required|string|max:255',
             'student_number' => 'required|string|max:50',
+            'consent' => 'accepted',
         ]);
 
         $exam = Exam::where('exam_code', strtoupper($code))
@@ -45,7 +46,9 @@ class ExamSessionController extends Controller
         $now = now();
 
         $session = $exam->sessions()->create([
-            ...$data,
+            'student_name' => $data['student_name'],
+            'student_number' => $data['student_number'],
+            'consented_at' => $now,
             'started_at' => $now,
             'expires_at' => $now->copy()->addMinutes($exam->duration_minutes),
         ]);

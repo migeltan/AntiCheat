@@ -1,17 +1,18 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
-import StudentLayout from './components/student/StudentLayout'
-import AdminLayout from './pages/Admin/AdminLayout'
-import Dashboard from './pages/Admin/Dashboard'
-import ExamDetail from './pages/Admin/ExamDetail'
-import NewExam from './pages/Admin/NewExam'
-import SessionReview from './pages/Admin/SessionReview'
-import Landing from './pages/Landing'
-import NotFound from './pages/NotFound'
-import CodeEntry from './pages/Student/CodeEntry'
-import Details from './pages/Student/Details'
-import ExamRoom from './pages/Student/ExamRoom'
-import Launcher from './pages/Student/Launcher'
-import Result from './pages/Student/Result'
+import { Navigate, Route, Routes } from "react-router-dom";
+import StudentLayout from "./components/student/StudentLayout";
+import AdminGate from "./components/admin/AdminGate";
+import AdminLayout from "./pages/Admin/AdminLayout";
+import Dashboard from "./pages/Admin/Dashboard";
+import ExamDetail from "./pages/Admin/ExamDetail";
+import NewExam from "./pages/Admin/NewExam";
+import SessionReview from "./pages/Admin/SessionReview";
+import Landing from "./pages/Landing";
+import NotFound from "./pages/NotFound";
+import CodeEntry from "./pages/Student/CodeEntry";
+import Details from "./pages/Student/Details";
+import ExamRoom from "./pages/Student/ExamRoom";
+import Launcher from "./pages/Student/Launcher";
+import Result from "./pages/Student/Result";
 
 export default function App() {
   return (
@@ -30,7 +31,14 @@ export default function App() {
       <Route path="/exam" element={<Navigate to="/student" replace />} />
 
       {/* Admin area: owned by the admin dashboard developer */}
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route
+        path="/admin"
+        element={
+          <AdminGate>
+            <AdminLayout />
+          </AdminGate>
+        }
+      >
         <Route index element={<Dashboard />} />
         <Route path="exams/new" element={<NewExam />} />
         <Route path="exams/:examId" element={<ExamDetail />} />
@@ -39,5 +47,5 @@ export default function App() {
 
       <Route path="*" element={<NotFound />} />
     </Routes>
-  )
+  );
 }

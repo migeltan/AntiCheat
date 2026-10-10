@@ -14,6 +14,7 @@ class ExamSummaryController extends Controller
             ->withCount([
                 'violations',
                 'violations as high_violations_count' => fn ($q) => $q->where('severity', 'high'),
+                'violations as significant_violations_count' => fn ($q) => $q->whereIn('severity', ['medium', 'high']),
                 'answers',
             ])
             ->orderBy('started_at')
@@ -29,7 +30,7 @@ class ExamSummaryController extends Controller
                 'violation_count' => $s->violations_count,
                 'high_violation_count' => $s->high_violations_count,
                 'answered_count' => $s->answers_count,
-                'needs_review' => $s->violations_count >= $exam->max_violations
+                'needs_review' => $s->significant_violations_count >= $exam->max_violations
                     || $s->high_violations_count > 0,
             ])
             ->values();

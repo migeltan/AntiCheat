@@ -13,6 +13,7 @@ export default function Details() {
   const nav = useNavigate();
   const { exam, error: loadError, loading } = useExamByCode(code);
   const [form, setForm] = useState({ student_name: "", student_number: "" });
+  const [consent, setConsent] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -31,8 +32,13 @@ export default function Details() {
     if (!form.student_name.trim()) errs.student_name = "Enter your full name.";
     if (!form.student_number.trim())
       errs.student_number = "Enter your student number.";
+    if (!consent)
+      errs.consent = "Tick the box to confirm you have read the notice above.";
     setFieldErrors(errs);
     if (Object.keys(errs).length) return;
+
+    // Must run inside this click: browsers only allow full screen after a user gesture.
+    document.documentElement.requestFullscreen?.().catch(() => {});
 
     setBusy(true);
     try {
@@ -43,6 +49,7 @@ export default function Details() {
           body: {
             student_name: form.student_name.trim(),
             student_number: form.student_number.trim(),
+            consent: true,
           },
         },
       );
@@ -57,6 +64,7 @@ export default function Details() {
       } else {
         setError(err.message); // 404 invalid code, 409 already submitted, network, 5xx
       }
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
       setBusy(false);
     }
   }
@@ -155,6 +163,30 @@ export default function Details() {
         <div className="sa-field">
           <label htmlFor="date">Date</label>
           <input id="date" value={today} readOnly />
+        </div>
+        <div className="sa-field">
+          <label className="sa-option" htmlFor="consent">
+            <input
+              id="consent"
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              aria-invalid={Boolean(fieldErrors.consent)}
+              aria-describedby={fieldErrors.consent ? "err-consent" : undefined}
+            />
+            <span>
+              I understand that during this exam the system records when I
+              switch tabs, when this window loses focus, when I exit full
+              screen, when I copy, cut or paste, and when my mouse pointer
+              leaves the window. These records are reviewed by my instructor,
+              who decides what they mean.
+            </span>
+          </label>
+          {fieldErrors.consent && (
+            <p id="err-consent" className="sa-error-text" role="alert">
+              {fieldErrors.consent}
+            </p>
+          )}
         </div>
         {error && (
           <p className="sa-notice" role="alert">

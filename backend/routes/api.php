@@ -8,6 +8,7 @@ use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ExamSummaryController;
 use App\Http\Controllers\GoogleFormController;
+use App\Http\Controllers\AdminAuthController;
 
 // All routes here are automatically prefixed with /api
 
@@ -28,8 +29,13 @@ Route::put('/sessions/{examSession}/answers', [AnswerController::class, 'save'])
 Route::post('/sessions/{examSession}/violations', [ViolationController::class, 'store']);
 Route::post('/sessions/{examSession}/submit', [ExamSessionController::class, 'submit']);
 
-// ---------- Admin routes (require ADMIN_API_KEY when it is set) ----------
-Route::middleware('admin.key')->group(function () {
+// ---------- Admin sign-in (teacher ID + password) ----------
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware('throttle:10,1');
+
+// ---------- Admin routes (require a signed-in teacher) ----------
+Route::middleware('admin.auth')->group(function () {
+    Route::get('/admin/me', [AdminAuthController::class, 'me']);
+    Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
     Route::get('/exams', [ExamController::class, 'index']);
     Route::post('/exams', [ExamController::class, 'store']);
     Route::patch('/exams/{exam}/publish', [ExamController::class, 'publish']);

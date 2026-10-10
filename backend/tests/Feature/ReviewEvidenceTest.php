@@ -5,11 +5,18 @@ namespace Tests\Feature;
 use App\Models\Exam;
 use App\Models\ExamSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\SignsInAsAdmin;
 use Tests\TestCase;
 
 class ReviewEvidenceTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, SignsInAsAdmin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->signInAsAdmin();
+    }
 
     private function startedSession(int $maxViolations = 3): ExamSession
     {
@@ -51,26 +58,4 @@ class ReviewEvidenceTest extends TestCase
             ->assertJsonPath('totals.needs_review', 1);
     }
 
-    public function test_admin_routes_are_open_when_no_key_is_configured(): void
-    {
-        config(['anticheat.admin_key' => null]);
-
-        $this->getJson('/api/exams')->assertOk();
-    }
-
-    public function test_admin_routes_require_the_key_when_configured(): void
-    {
-        config(['anticheat.admin_key' => 'secret']);
-
-        $this->getJson('/api/exams')->assertUnauthorized();
-        $this->withToken('wrong')->getJson('/api/exams')->assertUnauthorized();
-        $this->withToken('secret')->getJson('/api/exams')->assertOk();
-    }
-
-    public function test_student_routes_never_need_the_key(): void
-    {
-        config(['anticheat.admin_key' => 'secret']);
-
-        $this->getJson('/api/exams/code/NOPE12')->assertNotFound();
-    }
 }

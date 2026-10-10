@@ -5,11 +5,18 @@ namespace Tests\Feature;
 use App\Models\Exam;
 use App\Models\ExamSession;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\SignsInAsAdmin;
 use Tests\TestCase;
 
 class ExamLifecycleTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, SignsInAsAdmin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->signInAsAdmin();
+    }
 
     private function exam(string $status = Exam::STATUS_DRAFT, bool $withQuestion = true): Exam
     {
@@ -71,7 +78,7 @@ class ExamLifecycleTest extends TestCase
     public function test_draft_code_is_rejected(): void
     {
         $exam = $this->exam();
-        $student = ['student_name' => 'Ana', 'student_number' => '2024-001'];
+        $student = ['student_name' => 'Ana', 'student_number' => '2024-001', 'consent' => true];
 
         $this->getJson("/api/exams/code/{$exam->exam_code}")->assertNotFound();
         $this->postJson("/api/exams/code/{$exam->exam_code}/sessions", $student)->assertNotFound();
@@ -83,7 +90,7 @@ class ExamLifecycleTest extends TestCase
 
         $this->getJson("/api/exams/code/{$exam->exam_code}")->assertOk();
         $this->postJson("/api/exams/code/{$exam->exam_code}/sessions", [
-            'student_name' => 'Ben', 'student_number' => '2024-002',
+            'student_name' => 'Ben', 'student_number' => '2024-002', 'consent' => true,
         ])->assertStatus(409);
     }
 
@@ -94,7 +101,7 @@ class ExamLifecycleTest extends TestCase
         $questionId = $exam->questions()->value('id');
 
         $this->postJson("/api/exams/code/{$exam->exam_code}/sessions", [
-            'student_name' => 'Ana', 'student_number' => '2024-001',
+            'student_name' => 'Ana', 'student_number' => '2024-001', 'consent' => true,
         ])->assertOk()->assertJsonPath('id', $session->id);
 
         $this->getJson("/api/sessions/{$session->id}/questions")->assertOk();

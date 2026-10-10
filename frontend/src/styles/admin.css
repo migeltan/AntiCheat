@@ -1108,3 +1108,72 @@
     transition: none !important;
   }
 }
+/* ---------- admin sign-in (AdminGate) ---------- */
+.adm.adm-login-wrap {
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  padding: 24px;
+}
+.adm-login-card {
+  width: 100%;
+  max-width: 380px;
+  display: grid;
+  gap: 16px;
+  padding: 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.adm-login-card h1 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--ink);
+}
+.adm-login-card p {
+  margin: 0;
+  color: var(--muted);
+}
+.adm-login-form {
+  display: grid;
+  gap: 14px;
+}
+p.adm-login-brand {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--pine);
+}
+.adm-login-brand span {
+  font-weight: 400;
+  color: var(--muted);
+}
+p.adm-login-error {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--high-tint);
+  color: var(--high);
+}
+.adm-login-back {
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+button.adm-nav-link {
+  width: 100%;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+p.adm-user {
+  margin: 0;
+  padding: 0 10px;
+  display: grid;
+  font-size: 13px;
+  color: var(--ink);
+}
+.adm-user span {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}

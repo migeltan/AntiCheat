@@ -11,6 +11,10 @@ class Violation extends Model
     public const TYPES = [
         'tab_switch' => 'medium',
         'window_blur' => 'medium',
+        'fullscreen_exit' => 'medium',
+        'paste_attempt' => 'medium',
+        'copy_attempt' => 'low',
+        'mouse_left' => 'low',
         'app_detected' => 'high',
         'other' => 'low',
     ];

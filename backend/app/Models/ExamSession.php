@@ -10,12 +10,13 @@ class ExamSession extends Model
 {
     protected $fillable = [
         'exam_id', 'student_name', 'student_number',
-                'status', 'submit_reason', 'started_at', 'expires_at', 'submitted_at',
+        'status', 'submit_reason', 'consented_at', 'started_at', 'expires_at', 'submitted_at',
     ];
 
     protected function casts(): array
     {
         return [
+            'consented_at' => 'datetime',
             'started_at' => 'datetime',
             'expires_at' => 'datetime',
             'submitted_at' => 'datetime',

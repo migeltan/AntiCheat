@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
 
 // Flowchart: "Student enters exam code" -> GET /api/exams/code/{code}
@@ -59,6 +59,9 @@ export default function CodeEntry() {
           {busy ? "Checking…" : "Continue"}
         </button>
       </form>
+      <p className="sa-hint">
+        Instructor? <Link to="/admin">Sign in to the admin area</Link>
+      </p>
     </section>
   );
 }

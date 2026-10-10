@@ -2,12 +2,21 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
+use Tests\Concerns\SignsInAsAdmin;
 use Tests\TestCase;
 
 class GoogleFormFetchTest extends TestCase
 {
+    use RefreshDatabase, SignsInAsAdmin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->signInAsAdmin();
+    }
     private const URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdummyformid123456/viewform';
 
     public function test_rejects_non_google_and_non_form_urls_without_fetching(): void
