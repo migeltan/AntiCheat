@@ -45,6 +45,8 @@ class RequireSeb
 
     private function insideSeb(Request $request): bool
     {
+        logger()->info('SEB check', ['user_agent' => $request->userAgent()]);
+
         return str_contains((string) $request->userAgent(), 'SEB/');
     }
 }

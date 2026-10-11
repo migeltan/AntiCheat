@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { api } from "../../lib/api";
 import { Loading, StatePanel } from "../../components/student/StatePanel";
 import { useExamByCode } from "../../components/student/useExamByCode";
+import SebRequired from "../../components/student/SebRequired";
+import { isSafeExamBrowser } from "../../lib/environment";
 
 // Flowchart: "Enter Student Details" -> POST /api/exams/code/{code}/sessions
 //   201 new session · 200 resumed in-progress session · 409 already submitted · 422 validation
@@ -84,6 +86,11 @@ export default function Details() {
         {loadError}
       </StatePanel>
     );
+  }
+
+  // Lockdown exams can only be started inside Safe Exam Browser (the server enforces it too).
+  if (exam.require_seb && !isSafeExamBrowser()) {
+    return <SebRequired title={exam.title} />;
   }
 
   return (
