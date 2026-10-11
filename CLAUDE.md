@@ -106,11 +106,7 @@ Gotchas: `VITE_API_URL` must not end in `/api`; Vite 5180 busy = old dev server 
 
 ## 6. Next (user's queue, one at a time)
 
-Done: 1 (review verdict UI confirmed), 2 (answer keys + scoring).
-
-3. **Admin UI polish (in progress, nearly done).** Remaining: confirm the last batch in the browser (draft setup steps, rail highlight, NewExam text); check `AnswerKeyEditor` layout, sign-in page and the `SessionReview` page against the new palette (no screenshots seen yet); small fixes only. Then mark 3 done.
-4. **Student UI/UX polish** (code entry page is sparse; general improvements).
-5. Phase 5 leftovers: unguessable session tokens for student routes, seed data + demo walkthrough, optional per-exam SEB, optional "time away" evidence, delete the duplicate `AdminLayout.jsx`.
+1. Update the README as per standard format. Give the context of the project, documents and links available (video demo and pdf), tech stack used, prerequisites and how to setup, screenshots, members and what we did specifically, etc.
 
 ## 7. Known risks (state them, do not hide them)
 

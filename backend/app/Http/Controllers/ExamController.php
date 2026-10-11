@@ -22,10 +22,14 @@ class ExamController extends Controller
             'form_url' => 'nullable|url|max:2048',
             'duration_minutes' => 'required|integer|min:1|max:600',
             'max_violations' => 'sometimes|integer|min:1|max:20',
+            'require_seb' => 'sometimes|boolean',
         ]);
 
         // Always starts as a draft; use PATCH /exams/{exam}/publish once it has questions.
-        return response()->json(Exam::create([...$data, 'status' => Exam::STATUS_DRAFT]), 201);
+        $exam = Exam::create([...$data, 'status' => Exam::STATUS_DRAFT]);
+
+        // refresh() so database defaults (show_score, require_seb) are in the response
+        return response()->json($exam->refresh(), 201);
     }
 
     // Student: validate exam code
@@ -66,6 +70,20 @@ class ExamController extends Controller
         $data = $request->validate(['show_score' => 'present|boolean']);
 
         $exam->update(['show_score' => $data['show_score']]);
+
+        return response()->json($exam->fresh());
+    }
+
+    // Admin: require Safe Exam Browser (lockdown) for this exam. Only before anyone has started.
+    public function setSebRequirement(Request $request, Exam $exam): JsonResponse
+    {
+        $data = $request->validate(['require_seb' => 'present|boolean']);
+
+        if ($exam->sessions()->exists()) {
+            return response()->json(['message' => 'Lockdown can no longer be changed once students have started.'], 409);
+        }
+
+        $exam->update(['require_seb' => $data['require_seb']]);
 
         return response()->json($exam->fresh());
     }

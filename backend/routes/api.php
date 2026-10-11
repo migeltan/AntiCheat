@@ -23,14 +23,17 @@ Route::get('/ping', fn () => response()->json([
 
 // ---------- Student routes (no admin key) ----------
 Route::get('/exams/code/{code}', [ExamController::class, 'showByCode']);
-Route::post('/exams/code/{code}/sessions', [ExamSessionController::class, 'start']);
-Route::get('/sessions/{examSession}', [ExamSessionController::class, 'show']);
-Route::get('/sessions/{examSession}/questions', [QuestionController::class, 'forSession']);
-Route::get('/sessions/{examSession}/answers', [AnswerController::class, 'index']);
-Route::get('/sessions/{examSession}/result', SessionResultController::class);
-Route::put('/sessions/{examSession}/answers', [AnswerController::class, 'save']);
-Route::post('/sessions/{examSession}/violations', [ViolationController::class, 'store']);
-Route::post('/sessions/{examSession}/submit', [ExamSessionController::class, 'submit']);
+// Exams with lockdown on (require_seb) only accept these from Safe Exam Browser.
+Route::middleware('seb.required')->group(function () {
+    Route::post('/exams/code/{code}/sessions', [ExamSessionController::class, 'start']);
+    Route::get('/sessions/{examSession}', [ExamSessionController::class, 'show']);
+    Route::get('/sessions/{examSession}/questions', [QuestionController::class, 'forSession']);
+    Route::get('/sessions/{examSession}/answers', [AnswerController::class, 'index']);
+    Route::get('/sessions/{examSession}/result', SessionResultController::class);
+    Route::put('/sessions/{examSession}/answers', [AnswerController::class, 'save']);
+    Route::post('/sessions/{examSession}/violations', [ViolationController::class, 'store']);
+    Route::post('/sessions/{examSession}/submit', [ExamSessionController::class, 'submit']);
+});
 
 // ---------- Admin sign-in (teacher ID + password) ----------
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware('throttle:10,1');
@@ -44,6 +47,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::patch('/exams/{exam}/publish', [ExamController::class, 'publish']);
     Route::patch('/exams/{exam}/close', [ExamController::class, 'close']);
     Route::patch('/exams/{exam}/score-visibility', [ExamController::class, 'setScoreVisibility']);
+    Route::patch('/exams/{exam}/seb-requirement', [ExamController::class, 'setSebRequirement']);
 
     Route::get('/exams/{exam}/sessions', [ExamSessionController::class, 'index']);
     Route::get('/exams/{exam}/violations', [ViolationController::class, 'forExam']);
