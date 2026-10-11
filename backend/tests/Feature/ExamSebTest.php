@@ -78,4 +78,14 @@ class ExamSebTest extends TestCase
             ->assertStatus(409);
         $this->assertFalse($exam->fresh()->require_seb);
     }
+
+    public function test_exam_summary_reports_the_setting(): void
+    {
+        $this->signInAsAdmin();
+        $exam = $this->makeExam(['require_seb' => true]);
+
+        $this->getJson("/api/exams/{$exam->id}/summary")
+            ->assertOk()
+            ->assertJsonPath('exam.require_seb', true);
+    }
 }

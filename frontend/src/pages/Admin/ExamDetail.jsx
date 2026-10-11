@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { api } from "../../lib/api";
 import { usePolling } from "../../components/admin/usePolling";
 import {
@@ -25,6 +30,7 @@ const TABS = [
 export default function ExamDetail() {
   const { examId } = useParams();
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const {
     data: summary,
@@ -44,7 +50,7 @@ export default function ExamDetail() {
     : defaultTab;
 
   const [acting, setActing] = useState(false);
-    const [actionError, setActionError] = useState("");
+  const [actionError, setActionError] = useState("");
   // Reported by the Questions tab: how many choice questions have a saved correct answer.
   const [keys, setKeys] = useState(null);
   const onKeys = (next) =>
@@ -79,6 +85,39 @@ export default function ExamDetail() {
       setActionError(err.message);
     }
     setActing(false);
+  };
+
+  const changeSebRequirement = async (on) => {
+    setActing(true);
+    setActionError("");
+    try {
+      await api(`/exams/${examId}/seb-requirement`, {
+        method: "PATCH",
+        body: { require_seb: on },
+      });
+      await refresh();
+    } catch (err) {
+      setActionError(err.message);
+    }
+    setActing(false);
+  };
+
+  const deleteExam = async (title, attempts) => {
+    const warning =
+      attempts > 0
+        ? ` This also permanently deletes ${attempts} student attempt${attempts === 1 ? "" : "s"} with their answers and violation logs.`
+        : "";
+    if (!window.confirm(`Delete "${title}"?${warning} This cannot be undone.`))
+      return;
+    setActing(true);
+    setActionError("");
+    try {
+      await api(`/exams/${examId}`, { method: "DELETE" });
+      navigate("/admin");
+    } catch (err) {
+      setActionError(err.message);
+      setActing(false);
+    }
   };
 
   if (loading) return <Loading label="Loading exam" />;
@@ -138,7 +177,7 @@ export default function ExamDetail() {
   // A draft nobody has started shows what to do next instead of a strip of zeros.
   const setup = exam.status === "draft" && totals.sessions === 0;
   const hasQuestions = totals.questions > 0;
-  const keysDone = 
+  const keysDone =
     hasQuestions && keys !== null && (keys.choice === 0 || keys.keyed > 0);
   const steps = [
     {
@@ -155,7 +194,7 @@ export default function ExamDetail() {
           ? "Optional. Choice questions are then scored automatically"
           : keys.choice === 0
             ? "Not needed: there are no choice questions"
-                        : keysDone
+            : keysDone
               ? `${keys.keyed} of ${keys.choice} choice questions set`
               : "Optional. Choice questions are then scored automatically",
       state: keysDone ? "done" : hasQuestions ? "now" : "wait",
@@ -195,6 +234,24 @@ export default function ExamDetail() {
               <span className="adm-switch-track" aria-hidden="true" />
               <span>Students see their score</span>
             </label>
+            <label
+              className="adm-switch"
+              title={
+                totals.sessions > 0
+                  ? "Locked: students have already started this exam."
+                  : "Students must open the exam in Safe Exam Browser, which blocks other apps and windows."
+              }
+            >
+              <input
+                type="checkbox"
+                role="switch"
+                checked={Boolean(exam.require_seb)}
+                onChange={(e) => changeSebRequirement(e.target.checked)}
+                disabled={acting || totals.sessions > 0}
+              />
+              <span className="adm-switch-track" aria-hidden="true" />
+              <span>Lockdown (Safe Exam Browser)</span>
+            </label>
           </p>
 
           {actionError && (
@@ -230,6 +287,19 @@ export default function ExamDetail() {
               Close exam
             </button>
           )}
+          <button
+            type="button"
+            className="adm-btn adm-btn-danger-outline"
+            onClick={() => deleteExam(exam.title, totals.sessions)}
+            disabled={acting || exam.status === "published"}
+            title={
+              exam.status === "published"
+                ? "Close the exam before deleting it."
+                : "Permanently delete this exam"
+            }
+          >
+            Delete exam
+          </button>
         </div>
       </header>
 

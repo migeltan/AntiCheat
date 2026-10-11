@@ -11,6 +11,7 @@ export default function NewExam() {
     duration_minutes: 60,
     max_violations: 3,
     form_url: "",
+    require_seb: false,
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null); // ApiError
@@ -26,6 +27,7 @@ export default function NewExam() {
         title: form.title.trim(),
         duration_minutes: Number(form.duration_minutes),
         max_violations: Number(form.max_violations),
+        require_seb: form.require_seb,
         ...(form.form_url.trim() ? { form_url: form.form_url.trim() } : {}),
       };
       const exam = await api("/exams", { method: "POST", body });
@@ -132,6 +134,26 @@ export default function NewExam() {
             <em className="adm-field-error">{fieldError(errs, "form_url")}</em>
           )}
         </label>
+
+        <div className="adm-field">
+          <label className="adm-switch">
+            <input
+              type="checkbox"
+              role="switch"
+              checked={form.require_seb}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, require_seb: e.target.checked }))
+              }
+            />
+            <span className="adm-switch-track" aria-hidden="true" />
+            <span>Lockdown: require Safe Exam Browser</span>
+          </label>
+          <small>
+            Students must open this exam in Safe Exam Browser, which blocks
+            other apps and windows. They need it installed. Leave off for a
+            normal browser exam, which is monitored only.
+          </small>
+        </div>
 
         <div className="adm-form-actions">
           <button

@@ -48,6 +48,7 @@ Route::middleware('admin.auth')->group(function () {
     Route::patch('/exams/{exam}/close', [ExamController::class, 'close']);
     Route::patch('/exams/{exam}/score-visibility', [ExamController::class, 'setScoreVisibility']);
     Route::patch('/exams/{exam}/seb-requirement', [ExamController::class, 'setSebRequirement']);
+    Route::delete('/exams/{exam}', [ExamController::class, 'destroy']);
 
     Route::get('/exams/{exam}/sessions', [ExamSessionController::class, 'index']);
     Route::get('/exams/{exam}/violations', [ViolationController::class, 'forExam']);

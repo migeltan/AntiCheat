@@ -1221,7 +1221,13 @@ p.adm-user {
 .adm-btn-danger:hover:not(:disabled) {
   filter: brightness(0.92);
 }
-
+.adm-btn-danger-outline {
+  color: var(--high);
+  border-color: var(--high);
+}
+.adm-btn-danger-outline:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--high) 8%, transparent);
+}
 /* ---------- answer key + scoring ---------- */
 .adm-key-options {
   margin: 8px 0 0;
@@ -1619,4 +1625,62 @@ p.adm-user {
 }
 .adm-step.is-wait {
   opacity: 0.75;
+}
+/* ---------- clearer controls (exam page header) ---------- */
+/* The switches become toggle chips: bordered, tinted when on, highlighted on hover. */
+.adm-meta .adm-switch {
+  padding: 5px 12px 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--ink);
+  font-weight: 500;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.adm-meta .adm-switch:hover:not(:has(input:disabled)) {
+  border-color: var(--pine);
+  background: var(--pine-tint);
+}
+.adm-meta .adm-switch:has(input:checked) {
+  border-color: var(--pine);
+  background: var(--pine-tint);
+  color: var(--pine-strong);
+}
+.adm-meta .adm-switch:has(input:disabled) {
+  cursor: not-allowed;
+}
+.adm-meta .adm-switch:has(input:disabled) input {
+  cursor: not-allowed;
+}
+
+/* Refresh: a real bordered button instead of a bare word. */
+.adm-fresh .adm-btn-quiet {
+  border-color: var(--line);
+  background: var(--panel);
+  min-height: 32px;
+  padding: 4px 12px;
+  font-weight: 500;
+}
+.adm-fresh .adm-btn-quiet:hover:not(:disabled) {
+  background: var(--pine-tint);
+  border-color: var(--pine);
+}
+
+/* Copy (exam code): tinted so it reads as a button, solid blue on hover. */
+.adm-code-copy {
+  background: var(--pine-tint);
+  font-weight: 600;
+}
+.adm-code-copy:hover {
+  background: var(--pine);
+  color: var(--on-pine);
+}
+
+/* Visible keyboard focus on every admin button. */
+.adm-btn:focus-visible,
+.adm-code-copy:focus-visible {
+  outline: 2px solid var(--pine);
+  outline-offset: 2px;
 }

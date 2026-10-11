@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../../lib/api";
 import {
   ParseError,
@@ -113,7 +113,8 @@ export default function QuestionsPanel({ summary, onImported, onKeys }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questions]);
   const [mode, setMode] = useState("link");
-  const [url, setUrl] = useState("");
+  // A link pasted when the exam was created is already filled in.
+  const [url, setUrl] = useState(exam.form_url ?? "");
   const [text, setText] = useState("");
   const [manual, setManual] = useState([]);
   const [draft, setDraft] = useState(EMPTY_DRAFT);
@@ -149,13 +150,13 @@ export default function QuestionsPanel({ summary, onImported, onKeys }) {
     }
   };
 
-  const fetchLink = async () => {
+  const fetchFrom = async (link) => {
     setBusy(true);
     reset();
     try {
       const { source } = await api("/forms/fetch", {
         method: "POST",
-        body: { url: url.trim() },
+        body: { url: link },
       });
       checkSource(source);
     } catch (err) {
@@ -163,6 +164,19 @@ export default function QuestionsPanel({ summary, onImported, onKeys }) {
     }
     setBusy(false);
   };
+  const fetchLink = () => fetchFrom(url.trim());
+
+  // A link pasted on "New exam" is fetched once, so the questions are already
+  // waiting in the preview. The teacher still reviews them and clicks Save.
+  const autoTried = useRef(false);
+  useEffect(() => {
+    if (autoTried.current || !questions) return;
+    autoTried.current = true;
+    if (questions.length === 0 && !locked && exam.form_url) {
+      fetchFrom(exam.form_url);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questions]);
 
   const addManual = () => {
     const q = {

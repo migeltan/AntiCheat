@@ -88,6 +88,19 @@ class ExamController extends Controller
         return response()->json($exam->fresh());
     }
 
+    // Admin: delete an exam with its questions, attempts, answers and violations (all cascade).
+    // A live (published) exam must be closed first so nobody loses an attempt mid-exam.
+    public function destroy(Exam $exam): JsonResponse
+    {
+        if ($exam->status === Exam::STATUS_PUBLISHED) {
+            return response()->json(['message' => 'Close this exam before deleting it.'], 409);
+        }
+
+        $exam->delete();
+
+        return response()->json(['message' => 'Exam deleted.']);
+    }
+
     // Admin: stop new attempts; students already in progress can finish
     public function close(Exam $exam): JsonResponse
     {
