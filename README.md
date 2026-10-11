@@ -86,14 +86,12 @@ A website can't lock a computer, so for strict exams the teacher can turn on **R
 
 ## 👥 Team
 
-> **TODO:** fill in names and what each member did.
-
 | Member                         | Role                    | What they did                                              |
 | ------------------------------ | ----------------------- | ---------------------------------------------------------- |
 | _Tan, Migel H._                | Backend / Data Lead     | _e.g. database, API, scoring, teacher login, activity log_ |
 | _Baquing, Jaycee S._           | Form / Frontend Dev     | _e.g. student exam flow, timer, autosave, submission_      |
 | _Panen, Alfred Nino Angelo D._ | Admin Dashboard + UI/UX | _e.g. teacher dashboard, review screens, overall design_   |
-| _Orate, Francheska Gwen p._    | Kiosk / Lockdown Dev    | _e.g. Safe Exam Browser setup, activity tracking_          |
+| _Orate, Francheska Gwen P._    | Kiosk / Lockdown Dev    | _e.g. Safe Exam Browser setup, activity tracking_          |
 | _Aurel, Nicole Margaret_       | QA / Integration + Docs | _e.g. testing, documentation, merging branches_            |
 
 ---
