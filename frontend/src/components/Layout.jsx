@@ -2,7 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 
 const links = [
   { to: '/', label: 'Home', end: true },
-  { to: '/exam', label: 'Exam' },
+  { to: '/student', label: 'Exam' },
   { to: '/admin', label: 'Admin' },
 ]
 

@@ -30,7 +30,7 @@ export default function Home() {
           so students can only do one thing: take the exam.
         </p>
         <div className="actions">
-          <Link to="/exam" className="btn btn-primary">📝 Take an Exam</Link>
+          <Link to="/student" className="btn btn-primary">📝 Take an Exam</Link>
           <Link to="/admin" className="btn btn-ghost">📊 Admin Dashboard</Link>
         </div>
       </section>
