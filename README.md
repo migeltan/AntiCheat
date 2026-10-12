@@ -92,7 +92,7 @@ A website can't lock a computer, so for strict exams the teacher can turn on **R
 | _Baquing, Jaycee S._           | Form / Frontend Dev     | _e.g. student exam flow, timer, autosave, submission_      |
 | _Panen, Alfred Nino Angelo D._ | Admin Dashboard + UI/UX | _e.g. teacher dashboard, review screens, overall design_   |
 | _Orate, Francheska Gwen P._    | Kiosk / Lockdown Dev    | _e.g. Safe Exam Browser setup, activity tracking_          |
-| _Aurel, Nicole Margaret_       | QA / Integration + Docs | _e.g. testing, documentation, merging branches_            |
+| _Aurel, Nicole Margaret R._    | QA / Integration + Docs | _e.g. testing, documentation, merging branches_            |
 
 ---
 
