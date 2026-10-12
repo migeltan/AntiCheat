@@ -10,7 +10,7 @@ A web-based quiz system that replaces Google Forms for school exams. Students ta
 
 | Resource            | Link                                                 |
 | ------------------- | ---------------------------------------------------- |
-| 🎬 Video demo       | **TODO:** paste link                                 |
+| 🎬 Video demo       | https://drive.google.com/file/d/136BxpgEwtMoP-KEsTrzWI6FWpSJBFquZ/view?usp=sharing                             |
 | 📄 Project document | **TODO:** paste PDF link (or `docs/<file>.pdf`)      |
 | 💻 Source code      | https://github.com/migeltan/AntiCheat (`dev` branch) |
 | 🔒 Lockdown guide   | [`docs/kiosk-setup.md`](docs/kiosk-setup.md)         |
