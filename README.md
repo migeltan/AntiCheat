@@ -8,12 +8,12 @@ A web-based quiz system that replaces Google Forms for school exams. Students ta
 
 ## 📚 Project Resources
 
-| Resource            | Link                                                 |
-| ------------------- | ---------------------------------------------------- |
-| 🎬 Video demo       | **TODO:** paste link                                 |
-| 📄 Project document | **TODO:** paste PDF link (or `docs/<file>.pdf`)      |
-| 💻 Source code      | https://github.com/migeltan/AntiCheat (`dev` branch) |
-| 🔒 Lockdown guide   | [`docs/kiosk-setup.md`](docs/kiosk-setup.md)         |
+| Resource            | Link                                                                               |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| 🎬 Video demo       | https://drive.google.com/file/d/136BxpgEwtMoP-KEsTrzWI6FWpSJBFquZ/view?usp=sharing |
+| 📄 Project document | `docs/INTE_301_System_1.pdf`)                                                      |
+| 💻 Source code      | https://github.com/migeltan/AntiCheat (`dev` branch)                               |
+| 🔒 Lockdown guide   | [`docs/kiosk-setup.md`](docs/kiosk-setup.md)                                       |
 
 ---
 
