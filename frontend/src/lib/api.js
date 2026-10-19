@@ -23,6 +23,7 @@ export async function api(path, { body, headers, ...options } = {}) {
       ...options,
       headers: {
         Accept: "application/json",
+        "ngrok-skip-browser-warning": "true", // skips ngrok's free-plan warning page
         ...(body ? { "Content-Type": "application/json" } : {}),
         ...(getAdminToken()
           ? { Authorization: `Bearer ${getAdminToken()}` }
