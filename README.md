@@ -2,7 +2,7 @@
 
 A web-based quiz system that replaces Google Forms for school exams. Students take the exam inside the app, the system **quietly records suspicious activity** (like switching tabs), and teachers **review the records and make the final decision**. For stricter exams, it can also work with **Safe Exam Browser** to lock the student's computer during the test.
 
-> School project of Group 9, Polytechnic University of the Philippines (PUP), fulfilment for the course INTE 301 Systems Integration and Architecture.
+> School project of Group 9, Polytechnic University of the Phi   lippines (PUP), fulfilment for the course INTE 301 Systems Integration and Architecture.
 
 ---
 
